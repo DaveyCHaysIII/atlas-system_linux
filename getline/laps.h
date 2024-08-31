@@ -20,9 +20,6 @@ typedef struct CarNode
 	struct CarNode *right;
 } CarNode;
 
-/* static root of the race */
-static CarNode *root;
-
 CarNode *newCarNode(int id);
 CarNode *insertCarNode(CarNode *node, int id);
 void printRaceState(CarNode *node);

@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include "laps.h"
 
+
+/* static variable to hold the bst */
+
+static CarNode *root;
+
 /**
  * newCarNode- function to make a new car
  * @id: the name of the car

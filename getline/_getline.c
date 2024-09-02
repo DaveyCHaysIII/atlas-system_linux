@@ -98,14 +98,15 @@ ReadNode *load_node(int fd, ReadNode **head)
 
 char *next_line_ptr(char *line)
 {
+	if (line == NULL)
+	{
+		return (NULL);
+	}
 	while (*line != '\n' && *line != '\0')
 	{
 		line++;
 	}
-	if (*line == '\n' || *line == '\0')
-	{
-		return (line);
-	}
+
 	return (NULL);
 }
 

@@ -15,6 +15,6 @@ typedef struct ReadNode
 ReadNode *load_node(int fd, ReadNode **head);
 char *_getline(const int fd);
 char *next_line_ptr(char *line);
-void free_list(ReadNode *head);
+void free_list(ReadNode **head);
 
 #endif

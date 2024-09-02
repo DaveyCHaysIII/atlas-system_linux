@@ -14,6 +14,7 @@ char *_getline(const int fd)
 {
 	static ReadNode *head;
 	ReadNode *node = load_node(fd, &head);
+
 	if (fd == -1)
 	{
 		free_list(&head);
@@ -23,21 +24,23 @@ char *_getline(const int fd)
 	{
 		node->current = node->buffer;
 	}
-	int read = read(fd, node->buffer, READ_SIZE);
-	if (read < 0)
+	int bytes_read = read(fd, node->buffer, READ_SIZE);
+
+	if (bytes_read < 0)
 	{
 		return (NULL);
 	}
 	node->nextLine = next_line_ptr(node->current);
 	size_t length = (node->nextLine - node->current);
 	char *char_buffer = strndup(node->current, length);
+
 	if (char_buffer == NULL)
 	{
 		return (NULL);
 	}
 	node->current = node->nextLine + 1;
 	return (char_buffer);
-};
+}
 
 /**
  * load_node- loads a node
@@ -57,17 +60,19 @@ ReadNode *load_node(int fd, ReadNode **head)
 		{
 			return (current);
 		}
-		current = current->next
+		current = current->next;
 	}
 	ReadNode *newNode = malloc(sizeof(ReadNode));
 
 	if (newNode == NULL)
 	{
-		perror("Memory Allocation Failed!");
-		exit(EXIT_FAILURE);
+		return (NULL);
 	}
 	newNode->fd = fd;
-	newNode->current = newNode->nextLine = newNode->next = NULL;
+	newNode->current = NULL;
+	newNode->nextLine = NULL;
+	newNode->next = NULL;
+
 	if (*head == NULL)
 	{
 		*head = newNode;
@@ -82,7 +87,7 @@ ReadNode *load_node(int fd, ReadNode **head)
 		current->next = newNode;
 	}
 	return (newNode);
-};
+}
 
 /**
  * next_line_ptr- finds the pointer to the next newline
@@ -95,14 +100,14 @@ char *next_line_ptr(char *line)
 {
 	while (*line != '\n' && *line != '\0')
 	{
-		*line++;
+		line++;
 	}
 	if (*line == '\n' || *line == '\0')
 	{
 		return (line);
 	}
 	return (NULL);
-};
+}
 
 /**
  * free_list- frees a linked list
@@ -123,4 +128,4 @@ void free_list(ReadNode **head)
 		current = next_node;
 	}
 	*head = NULL;
-};
+}

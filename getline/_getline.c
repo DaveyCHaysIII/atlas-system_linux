@@ -13,9 +13,29 @@
 char *_getline(const int fd)
 {
 	static ReadNode *head;
-	ReadNode *node = load_node(fd, *head);
-	char *buffer = strndup(node->buffer, (node->current - node->nextLine);
-
+	ReadNode *node = load_node(fd, &head);
+	if (fd == -1)
+	{
+		free_list(&head);
+		return (NULL);
+	}
+	if (node->current == NULL)
+	{
+		node->current = node->buffer;
+	}
+	int read = read(fd, node->buffer, READ_SIZE);
+	if (read < 0)
+	{
+		return (NULL);
+	}
+	node->nextLine = next_line_ptr(node->current);
+	size_t length = (node->nextLine - node->current);
+	char *char_buffer = strndup(node->current, length);
+	if (char_buffer == NULL)
+	{
+		return (NULL);
+	}
+	node->current = node->nextLine + 1;
 	return (char_buffer);
 };
 
@@ -77,7 +97,7 @@ char *next_line_ptr(char *line)
 	{
 		*line++;
 	}
-	if (*line == '\n')
+	if (*line == '\n' || *line == '\0')
 	{
 		return (line);
 	}

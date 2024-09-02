@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "_getline.h"
+#include "example.h"
 
 /**
  * main - entry point.

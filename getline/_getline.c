@@ -71,7 +71,7 @@ ReadNode *load_node(int fd, ReadNode **head)
 		}
 		current = current->next;
 	}
-	ReadNode *newNode = calloc(1, sizeof(ReadNode));
+	ReadNode *newNode = malloc(sizeof(ReadNode));
 
 	if (newNode == NULL)
 	{

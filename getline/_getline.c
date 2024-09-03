@@ -24,35 +24,29 @@ char *_getline(const int fd)
 	{
 		node->current = node->buffer;
 	}
-	printf("Address of node->buffer: %p\n", node->buffer);
-	printf("Address of node->current: %p\n", node->current);
 
 	int bytes_read = read(fd, node->buffer, READ_SIZE);
-	node->buffer[bytes_read] = '\0';
 
+	node->buffer[bytes_read] = '\0';
 	if (bytes_read < 0)
 	{
 		return (NULL);
 	}
+
 	node->nextLine = next_line_ptr(node->current);
 	if (node->nextLine == NULL)
 	{
 		free(node);
 		return (NULL);
 	}
-	printf("Address of node_nextLine: %p\n", node->nextLine);
-	size_t length = (node->nextLine - node->current);
-	if (length == 0)
-	{
-		node->nextLine++;
-		length++;
-	}
-	char *char_buffer = strndup(node->current, length);
-	printf("Length of next - current: %zu\n", length);
+
+	char *char_buffer = char_buffer_init(node);
+
 	if (char_buffer == NULL)
 	{
 		return (NULL);
 	}
+
 	node->current = node->nextLine + 1;
 	return (char_buffer);
 }
@@ -148,4 +142,34 @@ void free_list(ReadNode **head)
 		current = next_node;
 	}
 	*head = NULL;
+}
+
+/**
+ * char_buffer_init- strndups the line from the read buffer
+ * @node: the node holding all the data we need
+ *
+ * Return: the nullbyte terminated character string
+ */
+
+char *char_buffer_init(ReadNode *node)
+{
+	size_t length;
+
+	length = (node->nextLine - node->current);
+	if (length == 0)
+	{
+		node->nextLine++;
+		length++;
+	}
+
+	char *new_str = malloc(length + 1);
+
+	if (new_str == NULL)
+	{
+		return (NULL);
+	}
+
+	strncpy(new_str, node->current, length);
+	new_str[length] = '\0';
+	return (new_str);
 }

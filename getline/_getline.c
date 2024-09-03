@@ -37,6 +37,7 @@ char *_getline(const int fd)
 	node->nextLine = next_line_ptr(node->current);
 	if (node->nextLine == NULL)
 	{
+		free(node);
 		return (NULL);
 	}
 	printf("Address of node_nextLine: %p\n", node->nextLine);

@@ -18,7 +18,9 @@ int main(void)
 	fd = open("1-main.c", 0);
 	while ((line = _getline(fd)))
 	{
+		printf("---------------LINE--------------------------\n");
 		printf("%s\n", line);
+		printf("---------------END---------------------------\n\n");
 		free(line);
 	}
 	close(fd);

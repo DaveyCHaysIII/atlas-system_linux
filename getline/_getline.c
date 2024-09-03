@@ -1,8 +1,8 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include "_getline.h"
-
 /**
  * _getline- get a line from a file descriptor
  * @fd: the file in question
@@ -24,16 +24,30 @@ char *_getline(const int fd)
 	{
 		node->current = node->buffer;
 	}
+	printf("Address of node->buffer: %p\n", node->buffer);
+	printf("Address of node->current: %p\n", node->current);
+
 	int bytes_read = read(fd, node->buffer, READ_SIZE);
+	node->buffer[bytes_read] = '\0';
 
 	if (bytes_read < 0)
 	{
 		return (NULL);
 	}
 	node->nextLine = next_line_ptr(node->current);
+	if (node->nextLine == NULL)
+	{
+		return (NULL);
+	}
+	printf("Address of node_nextLine: %p\n", node->nextLine);
 	size_t length = (node->nextLine - node->current);
+	if (length == 0)
+	{
+		node->nextLine++;
+		length++;
+	}
 	char *char_buffer = strndup(node->current, length);
-
+	printf("Length of next - current: %zu\n", length);
 	if (char_buffer == NULL)
 	{
 		return (NULL);
@@ -62,7 +76,7 @@ ReadNode *load_node(int fd, ReadNode **head)
 		}
 		current = current->next;
 	}
-	ReadNode *newNode = malloc(sizeof(ReadNode));
+	ReadNode *newNode = calloc(1, sizeof(ReadNode));
 
 	if (newNode == NULL)
 	{
@@ -106,8 +120,12 @@ char *next_line_ptr(char *line)
 	{
 		line++;
 	}
+	if (*line == '\0')
+	{
+		return (NULL);
+	}
 
-	return (NULL);
+	return (line);
 }
 
 /**

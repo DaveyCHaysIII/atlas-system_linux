@@ -14,40 +14,42 @@ char *_getline(const int fd)
 {
 	static ReadNode *head;
 	ReadNode *node = load_node(fd, &head);
+	int bytes_read;
 
 	if (fd == -1)
 	{
 		free_list(&head);
 		return (NULL);
 	}
-	if (node->current == NULL)
+	if (*node->buffer == '\0')
 	{
-		node->current = node->buffer;
-	}
+		bytes_read = read(fd, node->buffer, READ_SIZE);
+		node->buffer[bytes_read] = '\0';
 
-	int bytes_read = read(fd, node->buffer, READ_SIZE);
-
-	node->buffer[bytes_read] = '\0';
-	if (bytes_read < 0)
-	{
-		return (NULL);
+		if (bytes_read < 0)
+			return (NULL);
 	}
 
 	node->nextLine = next_line_ptr(node->current);
-	if (node->nextLine == NULL)
-	{
-		free(node);
-		return (NULL);
-	}
-
 	char *char_buffer = char_buffer_init(node);
 
-	if (char_buffer == NULL)
+	if (*node->nextLine != '\0')
 	{
-		return (NULL);
+		node->current = node->nextLine + 1;
 	}
-
-	node->current = node->nextLine + 1;
+	else
+	{
+		bytes_read = read(fd, node->buffer, READ_SIZE);
+		node->buffer[bytes_read] = '\0';
+		if (bytes_read == 0)
+		{
+			free(node);
+			free(char_buffer);
+			return (NULL);
+		}
+		node->current = node->buffer;
+		node->nextLine = next_line_ptr(node->current);
+	}
 	return (char_buffer);
 }
 
@@ -78,7 +80,8 @@ ReadNode *load_node(int fd, ReadNode **head)
 		return (NULL);
 	}
 	newNode->fd = fd;
-	newNode->current = NULL;
+	newNode->current = newNode->buffer;
+	newNode->buffer[0] = '\0';
 	newNode->nextLine = NULL;
 	newNode->next = NULL;
 
@@ -115,11 +118,6 @@ char *next_line_ptr(char *line)
 	{
 		line++;
 	}
-	if (*line == '\0')
-	{
-		return (NULL);
-	}
-
 	return (line);
 }
 
@@ -156,7 +154,7 @@ char *char_buffer_init(ReadNode *node)
 	size_t length;
 
 	length = (node->nextLine - node->current);
-	if (length == 0)
+	if (length == 0 && *node->nextLine != '\0')
 	{
 		node->nextLine++;
 		length++;

@@ -1,12 +1,12 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define READ_SIZE 512
+#define READ_SIZE 1024
 
 typedef struct ReadNode
 {
 	int fd;
-	char buffer[1024];
+	char buffer[2048];
 	char *current;
 	char *nextLine;
 	struct ReadNode *next;

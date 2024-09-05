@@ -154,9 +154,8 @@ char *char_buffer_init(ReadNode *node)
 	size_t length;
 
 	length = (node->nextLine - node->current);
-	if (length == 0 && *node->nextLine != '\0')
+	if (length == 0 && *node->nextLine != '\0' && *node->current != '\n')
 	{
-		node->nextLine++;
 		length++;
 	}
 

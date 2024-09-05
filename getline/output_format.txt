@@ -114,7 +114,4 @@ CarNode *insertCarNode(CarNode *node, int id);$
 void printRaceState(CarNode *node);$
 void freeCarNodes(CarNode $
 *node);$
-void race_state(int *id, size_t size);$
-$
-$
-endif$
+void race_s

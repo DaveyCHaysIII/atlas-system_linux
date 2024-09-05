@@ -15,7 +15,7 @@ int main(void)
 	int fd1, fd2;
 	char *line;
 
-	fd1 = open("2-main.c", 0);
+	fd1 = open("output_format.txt", 0);
 	fd2 = open("laps.h", 0);
 	while ((line = _getline(fd1)))
 	{

@@ -40,14 +40,14 @@ int list_directory(const char *path, char *call_name)
 	struct dirent *entry;
 	struct stat data;
 
-	if (lstat(path, &data) == -1)
-	{
-		error_handler(call_name, path, -1);
-		return (-1);
-	}
 	if (data.st_mode & !S_IXUSR)
 	{
 		error_handler(call_name, path, -2);
+		return (-1);
+	}
+	if (lstat(path, &data) == -1)
+	{
+		error_handler(call_name, path, -1);
 		return (-1);
 	}
 	if (S_ISREG(data.st_mode))

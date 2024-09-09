@@ -66,7 +66,6 @@ int main(int argc, char **argv)
 	}
 	if (list_directory(path) < 0)
 	{
-		perror("Error: ");
 		exit(EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);

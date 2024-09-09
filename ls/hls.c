@@ -40,7 +40,7 @@ int list_directory(const char *path, char *call_name)
 	struct dirent *entry;
 	struct stat data;
 
-	if (stat(path, &data) == -1)
+	if (lstat(path, &data) == -1)
 	{
 		error_handler(call_name, path, -1);
 		return (-1);
@@ -106,6 +106,7 @@ int main(int argc, char **argv)
 			path = argv[i];
 			if (lstat(path, &path_data) == -1)
 			{
+				error_handler(argv[0], path, -1);
 				i++;
 				continue;
 			}

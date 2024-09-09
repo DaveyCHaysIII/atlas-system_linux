@@ -15,7 +15,18 @@ int list_directory(const char *path)
 {
 	DIR *dir;
 	struct dirent *entry;
+	struct stat data;
 
+	if (stat(path, &data) == -1)
+	{
+		perror("stat");
+		return (-1);
+	}
+	if (S_ISREG(data.st_mode))
+	{
+		printf("%s\n", path);
+		return (0);
+	}
 	dir = opendir(path);
 	if (dir == NULL)
 	{

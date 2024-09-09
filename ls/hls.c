@@ -68,15 +68,15 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		int i = argc - 1;
+		int i = 1;
 
-		while (i > 0)
+		while (i <= argc - 1)
 		{
 			path = argv[i];
 			printf("%s:\n", path);
 			list_directory(argv[i]);
 			printf("\n");
-			i--;
+			i++;
 		}
 	}
 	return (EXIT_SUCCESS);

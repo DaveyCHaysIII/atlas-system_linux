@@ -20,7 +20,7 @@ int list_directory(const char *path)
 	if (stat(path, &data) == -1)
 	{
 		perror("stat");
-		return (-1);
+		exit(EXIT_FAILURE);
 	}
 	if (S_ISREG(data.st_mode))
 	{
@@ -59,14 +59,25 @@ int main(int argc, char **argv)
 	if (argc < 2)
 	{
 		path = ".";
+		list_directory(path);
+	}
+	else if (argc == 2)
+	{
+		path = argv[1];
+		list_directory(path);
 	}
 	else
 	{
-		path = argv[1];
-	}
-	if (list_directory(path) < 0)
-	{
-		exit(EXIT_FAILURE);
+		int i = argc - 1;
+
+		while (i > 0)
+		{
+			path = argv[i];
+			printf("%s:\n ", path);
+			list_directory(argv[i]);
+			printf("\n");
+			i--;
+		}
 	}
 	return (EXIT_SUCCESS);
 }

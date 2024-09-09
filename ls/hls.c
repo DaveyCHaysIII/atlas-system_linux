@@ -19,7 +19,7 @@ int list_directory(const char *path)
 
 	if (stat(path, &data) == -1)
 	{
-		perror("stat: ");
+		perror("./hls_01: cannot access test/toto");
 		exit(EXIT_FAILURE);
 	}
 	if (S_ISREG(data.st_mode))

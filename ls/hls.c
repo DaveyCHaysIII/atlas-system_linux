@@ -8,18 +8,18 @@
  * error_handler- handles all of our errors
  * @call_name: always argv[0]
  * @path: the path of the file or directory
- * @errno: the error number
+ * @errnum: the error number
  *
  * Return: no return
  */
 void error_handler(char *call_name, const char *path, int errnum)
 {
-	if(errnum == -1)
+	if (errnum == -1)
 	{
 		fprintf(stderr,
 			"%s: cannot access %s: No such file or directory\n", call_name, path);
 	}
-	if(errnum == -2)
+	if (errnum == -2)
 	{
 		fprintf(stderr,
 			"%s: cannot open directory  %s: Permission denied\n", call_name, path);
@@ -29,7 +29,8 @@ void error_handler(char *call_name, const char *path, int errnum)
 /**
  * list_directory- lists all the entries in a directory
  * @path: the path to the directory to open
- * @call_name: always argv[0];
+ * @call_name: always argv[0]
+ *
  * Return: 0 on success, -1 on fail
  */
 

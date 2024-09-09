@@ -19,8 +19,7 @@ int list_directory(const char *path)
 
 	if (stat(path, &data) == -1)
 	{
-		perror("./hls_01: cannot access test/toto");
-		exit(EXIT_FAILURE);
+		return (-1);
 	}
 	if (S_ISREG(data.st_mode))
 	{
@@ -64,7 +63,11 @@ int main(int argc, char **argv)
 	else if (argc == 2)
 	{
 		path = argv[1];
-		list_directory(path);
+		if (list_directory(path) == -1)
+		{
+			printf("%s: cannot access test/toto: No such file or directory\n", argv[0]);
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{

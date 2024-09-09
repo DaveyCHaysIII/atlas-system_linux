@@ -54,6 +54,7 @@ int list_directory(const char *path)
 int main(int argc, char **argv)
 {
 	char *path;
+	struct stat path_data;
 
 	if (argc < 2)
 	{
@@ -77,6 +78,11 @@ int main(int argc, char **argv)
 		while (i <= argc - 1)
 		{
 			path = argv[i];
+			if (lstat(path, &path_data) == -1)
+			{
+				i++;
+				continue;
+			}
 			printf("%s:\n", path);
 			list_directory(argv[i]);
 			printf("\n");

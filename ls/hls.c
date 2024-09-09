@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 		while (i > 0)
 		{
 			path = argv[i];
-			printf("%s:\n ", path);
+			printf("%s:\n", path);
 			list_directory(argv[i]);
 			printf("\n");
 			i--;

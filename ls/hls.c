@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 		if (list_directory(path) == -1)
 		{
 			fprintf(stderr,
-				"%s: cannot access test/toto: No such file or directory\n", argv[0]);
+				"%s: cannot access %s: No such file or directory\n", argv[0], path);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -80,6 +80,8 @@ int main(int argc, char **argv)
 			path = argv[i];
 			if (lstat(path, &path_data) == -1)
 			{
+				fprintf(stderr,
+					"%s: cannot access %s: No such file or directory\n", argv[0], path);
 				i++;
 				continue;
 			}

@@ -19,7 +19,7 @@ int list_directory(const char *path)
 
 	if (stat(path, &data) == -1)
 	{
-		printf("./hls_01: cannot access %s:", path);
+		perror("./hls_01: cannot access %s:", path);
 		exit(EXIT_FAILURE);
 	}
 	if (S_ISREG(data.st_mode))

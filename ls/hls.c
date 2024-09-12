@@ -5,72 +5,85 @@
 #include "hls.h"
 
 /**
- * error_handler- handles all of our errors
- * @call_name: always argv[0]
- * @path: the path of the file or directory
- * @errnum: the error number
- *
- * Return: no return
- */
-void error_handler(char *call_name, const char *path, int errnum)
-{
-	if (errnum == -1)
-	{
-		fprintf(stderr,
-			"%s: cannot access %s: No such file or directory\n", call_name, path);
-	}
-	if (errnum == -2)
-	{
-		fprintf(stderr,
-			"%s: cannot open directory  %s: Permission denied\n", call_name, path);
-	}
-}
-
-/**
  * list_directory- lists all the entries in a directory
  * @path: the path to the directory to open
  * @call_name: always argv[0]
+ * @flags: pointer to flags array
  *
  * Return: 0 on success, -1 on fail
  */
 
-int list_directory(const char *path, char *call_name)
+int list_directory(const char *path, char *call_name, int *flags)
 {
 	DIR *dir;
 	struct dirent *entry;
 	struct stat data;
 
-	if (data.st_mode & !S_IXUSR)
-	{
-		error_handler(call_name, path, -2);
-		return (-1);
-	}
-	if (lstat(path, &data) == -1)
-	{
-		error_handler(call_name, path, -1);
-		return (-1);
-	}
 	if (S_ISREG(data.st_mode))
 	{
 		printf("%s\n", path);
 		return (0);
 	}
-	dir = opendir(path);
-	if (dir == NULL)
+	else if (path_validator(path, call_name, &data))
 	{
-		error_handler(call_name, path, -1);
-		return (-1);
-	}
-	while ((entry = readdir(dir)) != NULL)
-	{
-		if (*entry->d_name != '.')
+		dir = opendir(path);
+		if (dir == NULL)
 		{
-			printf("%s ", entry->d_name);
+			error_handler(call_name, path, -1);
+			return (-1);
 		}
+		while ((entry = readdir(dir)) != NULL)
+		{
+			entry_path = path_maker(path, entry->d_name);
+			lstat(entry_path, &data);
+			print_handler(&entry, &data, &flags);
+		}
+		printf("\n");
+		closedir(dir);
+		return (0);
 	}
-	printf("\n");
-	closedir(dir);
-	return (0);
+	return (-1);
+}
+
+/**
+ * entry_path- creates a direct path to a file
+ * @path: the path to the parent directory
+ * @name: the name of the file
+ *
+ * Return: the new path
+ */
+char *entry_path(const char *path, char* name)
+{
+
+}
+
+/**
+ * print_handler- handles the prints
+ * @entry: the thing to print
+ * @data: pointer to struct stat data
+ * @entry: pointer to dirent entry
+ * @flags: all the flags
+ *
+ * Return: no return
+ */
+void print_handler(struct dirent *entry, struct stat *data, int *flags)
+{
+	if (!flags[0])
+	{
+		printf("%s ", entry->d_name);
+	}
+	else
+	{
+		if (flags[1] && *entry->d_name == ".")
+			return;
+		if (flags[2] && (entry->d_name == "." || entry->d_name == ".."))
+			return;
+		if (flags[3])
+		{
+			printf("%s\n", entry->d_name);
+		}
+		/* flags 4, long format code here) */
+	}
 }
 
 /**
@@ -85,16 +98,18 @@ int main(int argc, char **argv)
 {
 	char *path;
 	struct stat path_data;
+	int flags[] = {0, 0, 0, 0, 0}; /*flags, a, A, 1, l*/
 
-	if (argc < 2)
+	flag_init(flags, argc, argv);
+	if (argc <= 2)
 	{
-		path = ".";
-		list_directory(path, argv[0]);
-	}
-	else if (argc == 2)
-	{
+		if (flags[0] || argc < 2)
+		{
+			path = ".";
+			list_directory(path, argv[0], flags);
+		}
 		path = argv[1];
-		if (list_directory(path, argv[0]) == -1)
+		if (list_directory(path, argv[0], flags) == -1)
 			exit(EXIT_FAILURE);
 	}
 	else
@@ -104,14 +119,13 @@ int main(int argc, char **argv)
 		while (i <= argc - 1)
 		{
 			path = argv[i];
-			if (lstat(path, &path_data) == -1)
+			if (path_validator(path, argv(0), &path_data) == -1)
 			{
-				error_handler(argv[0], path, -1);
 				i++;
 				continue;
 			}
 			printf("%s:\n", path);
-			list_directory(argv[i], argv[0]);
+			list_directory(argv[i], argv[0], flags);
 			printf("\n");
 			i++;
 		}

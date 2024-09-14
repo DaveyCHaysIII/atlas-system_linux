@@ -43,6 +43,10 @@ int path_validator(const char *path, char *call_name, struct stat *path_data)
 			error_handler(call_name, path, -1);
 			return (-1);
 		}
+		if (S_ISREG(path_data->st_mode))
+		{
+			return(0);
+		}
 		else if (!(path_data->st_mode & S_IXUSR))
 		{
 			error_handler(call_name, path, -2);

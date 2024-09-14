@@ -18,4 +18,7 @@ void error_handler(char *, const char*, int);
 int path_validator(const char *, char *, struct stat *);
 void flag_init(int *, int, char **);
 
+/*hls_tools */
+int _strlen(const char *);
+
 #endif

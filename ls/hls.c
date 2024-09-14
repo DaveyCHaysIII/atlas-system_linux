@@ -54,8 +54,8 @@ int list_directory(const char *path, char *call_name, int *flags)
  */
 char *path_maker(const char *path, char* name)
 {
-	int len_path = strlen(path);
-	int len_filename = strlen(name);
+	int len_path = _strlen(path);
+	int len_filename = _strlen(name);
 	char *path_new = malloc(len_path + len_filename + 2);
 	if (path == NULL)
 	{

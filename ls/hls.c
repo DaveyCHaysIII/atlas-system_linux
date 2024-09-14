@@ -18,7 +18,7 @@ int list_directory(const char *path, char *call_name, int *flags)
 
 	if (path_validator(path, call_name, &data) == 0)
 	{
-		if(S_ISREG(data.st_mode))
+		if (S_ISREG(data.st_mode))
 		{
 			printf("%s\n", path);
 			return (0);
@@ -52,11 +52,12 @@ int list_directory(const char *path, char *call_name, int *flags)
  *
  * Return: the new path
  */
-char *path_maker(const char *path, char* name)
+char *path_maker(const char *path, char *name)
 {
 	int len_path = _strlen(path);
 	int len_filename = _strlen(name);
 	char *path_new = malloc(len_path + len_filename + 2);
+
 	if (path == NULL)
 	{
 		exit(EXIT_FAILURE);
@@ -87,6 +88,7 @@ void print_handler(struct dirent *entry, struct stat *data, int *flags)
 	{
 		int is_dot = strcmp(entry->d_name, ".");
 		int is_dot_dot = strcmp(entry->d_name, "..");
+
 		if (!flags[1] && *entry->d_name == '.')
 		{
 			return;

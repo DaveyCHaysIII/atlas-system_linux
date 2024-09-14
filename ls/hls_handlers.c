@@ -1,8 +1,8 @@
 #include "hls.h"
 
 /**
- * error handler- handles all of our errors
- * call_name: always argv[0]
+ * error_handler- handles all of our errors
+ * @call_name: always argv[0]
  * @path: the path of the file or directory
  * @errnum: the error number
  *
@@ -26,7 +26,7 @@ void error_handler(char *call_name, const char *path, int errnum)
  * path_validator- validates a path
  * @path: the path to validate
  * @call_name: always argv[0]
- *
+ * @path_data: struct stat pointer
  *
  * Return: 0 on success, -1 for error, 1 for flags
  */
@@ -52,6 +52,14 @@ int path_validator(const char *path, char *call_name, struct stat *path_data)
 	}
 }
 
+/**
+ * flag_init- initializes the flag array
+ * @flags: pointer to array in question
+ * @argc: number of arguments to parse through
+ * @argv: array of strings to parse through
+ *
+ * Return: no return
+ */
 void flag_init(int *flags, int argc, char **argv)
 {
 	for (int i = 0; i < argc; i++)
@@ -60,6 +68,7 @@ void flag_init(int *flags, int argc, char **argv)
 		{
 			flags[0] = 1;
 			int j = 1;
+
 			while (argv[i][j] != '\0')
 			{
 				if (argv[i][j] == 'a')

@@ -117,16 +117,18 @@ int main(int argc, char **argv)
 	char *path;
 	struct stat path_data;
 	int flags[] = {0, 0, 0, 0, 0}; /*flags, a, A, 1, l*/
+	int list_count_total;
 
 	flag_init(flags, argc, argv);
-	if (argc <= 2 || (argc == 3 && flags[0]))
+	list_count_total = list_count(argc, argv);
+	if (list_count_total == 0)
 	{
-		if (flags[0] || argc < 2)
-		{
-			path = ".";
-			list_directory(path, argv[0], flags);
-			return (0);
-		}
+		path = ".";
+		list_directory(path, argv[0], flags);
+		return (0);
+	}
+	else if (list_count_total == 1)
+	{
 		path = argv[1];
 		if (list_directory(path, argv[0], flags) == -1)
 			exit(EXIT_FAILURE);

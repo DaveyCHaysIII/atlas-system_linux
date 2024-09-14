@@ -27,11 +27,32 @@ int _strlen(const char *string)
  */
 int _strcmp(const char *s1, const char *s2)
 {
-    while (*s1 && (*s1 == *s2))
-    {
-        s1++;
-        s2++;
-    }
+	while (*s1 && (*s1 == *s2))
+	{
+		s1++;
+		s2++;
+	}
 
-    return *(unsigned char *)s1 - *(unsigned char *)s2;
+	return (*(unsigned char *)s1 - *(unsigned char *)s2);
+}
+
+/**
+ * list_count- counts how many arguments are not flags
+ * @argv: pointer to the argument vector to parse
+ * @argc: number of entries to parse
+ *
+ * Return: number parsed
+ */
+int list_count(int argc, char **argv)
+{
+	int i = 1;
+	int j = 0;
+
+	while (i < argc)
+	{
+		if (*argv[i] != '-')
+			j++;
+		i++;
+	}
+	return (j);
 }

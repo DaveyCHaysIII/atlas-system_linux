@@ -86,8 +86,8 @@ void print_handler(struct dirent *entry, struct stat *data, int *flags)
 	}
 	else
 	{
-		int is_dot = strcmp(entry->d_name, ".");
-		int is_dot_dot = strcmp(entry->d_name, "..");
+		int is_dot = _strcmp(entry->d_name, ".");
+		int is_dot_dot = _strcmp(entry->d_name, "..");
 
 		if (!flags[1] && *entry->d_name == '.')
 		{

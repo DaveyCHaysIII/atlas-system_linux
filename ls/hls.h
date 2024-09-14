@@ -20,5 +20,5 @@ void flag_init(int *, int, char **);
 
 /*hls_tools */
 int _strlen(const char *);
-
+int _strcmp(const char *, const char *);
 #endif

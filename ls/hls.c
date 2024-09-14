@@ -35,7 +35,10 @@ int list_directory(const char *path, char *call_name, int *flags)
 			print_handler(entry, &data, flags);
 			free(entry_path);
 		}
-		printf("\n");
+		if (!(flags[3] || flags[4]))
+		{
+			printf("\n");
+		}
 		closedir(dir);
 		return (0);
 	}
@@ -85,14 +88,17 @@ void print_handler(struct dirent *entry, struct stat *data, int *flags)
 		int is_dot = strcmp(entry->d_name, ".");
 		int is_dot_dot = strcmp(entry->d_name, "..");
 		if (!flags[1] && *entry->d_name == '.')
+		{
 			return;
-		if (flags[2] && (is_dot || is_dot_dot))
+		}
+		else if (flags[2] && (is_dot == 0 || is_dot_dot == 0))
 			return;
-		if (flags[3])
+		else if (flags[3])
 			printf("%s\n", entry->d_name);
-		if (flags[4])
+		else if (flags[4])
 			printf("Placeholder for list: %ld\n", data->st_size);
-		printf("%s ", entry->d_name);
+		else
+			printf("%s ", entry->d_name);
 	}
 }
 
@@ -111,9 +117,9 @@ int main(int argc, char **argv)
 	int flags[] = {0, 0, 0, 0, 0}; /*flags, a, A, 1, l*/
 
 	flag_init(flags, argc, argv);
-	if (argc <= 2)
+	if (argc <= 2 || (argc == 3 && flags[0]))
 	{
-		if (!flags[0] || argc < 2)
+		if (flags[0] || argc < 2)
 		{
 			path = ".";
 			list_directory(path, argv[0], flags);

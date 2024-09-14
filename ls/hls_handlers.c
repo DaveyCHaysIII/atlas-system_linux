@@ -34,7 +34,7 @@ int path_validator(const char *path, char *call_name, struct stat *path_data)
 {
 	if (*path == '-')
 	{
-		return (1);
+		return (-1);
 	}
 	else
 	{
@@ -68,6 +68,7 @@ void flag_init(int *flags, int argc, char **argv)
 				}
 				else if (argv[i][j] == 'A')
 				{
+					flags[1] = 1;
 					flags[2] = 1;
 				}
 				else if (argv[i][j] == '1')

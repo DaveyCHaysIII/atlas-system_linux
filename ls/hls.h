@@ -17,6 +17,7 @@ void print_handler(struct dirent *, struct stat *, int *);
 void error_handler(char *, const char*, int);
 int path_validator(const char *, char *, struct stat *);
 void flag_init(int *, int, char **);
+void multi_print(int, char **, struct stat *, int *);
 
 /*hls_tools */
 int _strlen(const char *);

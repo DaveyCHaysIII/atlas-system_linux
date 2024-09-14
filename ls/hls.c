@@ -135,21 +135,7 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		int i = 1;
-
-		while (i <= argc - 1)
-		{
-			path = argv[i];
-			if (path_validator(path, argv[0], &path_data) == -1)
-			{
-				i++;
-				continue;
-			}
-			printf("%s:\n", path);
-			list_directory(argv[i], argv[0], flags);
-			printf("\n");
-			i++;
-		}
+		multi_print(argc, argv, &path_data, flags);
 	}
 	return (EXIT_SUCCESS);
 }

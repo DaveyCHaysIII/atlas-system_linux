@@ -45,7 +45,7 @@ int path_validator(const char *path, char *call_name, struct stat *path_data)
 		}
 		if (S_ISREG(path_data->st_mode))
 		{
-			return(0);
+			return (0);
 		}
 		else if (!(path_data->st_mode & S_IXUSR))
 		{
@@ -101,5 +101,35 @@ void flag_init(int *flags, int argc, char **argv)
 				j++;
 			}
 		}
+	}
+}
+
+/**
+ * multi_print- prints multiple directories
+ * @argc: length of argv
+ * @argv: argument vector
+ * @path_data: pointer to struct stat
+ * @flags: pointer to flags array
+ *
+ * Return: no return
+ */
+void multi_print(int argc, char **argv, struct stat *path_data, int *flags)
+{
+	char *path;
+	int i;
+
+	i = 1;
+	while (i <= argc - 1)
+	{
+		path = argv[i];
+		if (path_validator(path, argv[0], path_data) == -1)
+		{
+			i++;
+			continue;
+		}
+		printf("%s:\n", path);
+		list_directory(argv[i], argv[0], flags);
+		printf("\n");
+		i++;
 	}
 }

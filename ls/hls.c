@@ -129,7 +129,10 @@ int main(int argc, char **argv)
 	}
 	else if (list_count_total == 1)
 	{
-		path = argv[1];
+		if (*argv[1] != '-')
+			path = argv[1];
+		else
+			path = argv[2];
 		if (list_directory(path, argv[0], flags) == -1)
 			exit(EXIT_FAILURE);
 	}

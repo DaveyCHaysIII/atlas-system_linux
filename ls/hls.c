@@ -1,7 +1,3 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<dirent.h>
-#include<sys/stat.h>
 #include "hls.h"
 
 /**
@@ -18,14 +14,15 @@ int list_directory(const char *path, char *call_name, int *flags)
 	DIR *dir;
 	struct dirent *entry;
 	struct stat data;
+	char *entry_path;
 
-	if (S_ISREG(data.st_mode))
+	if (path_validator(path, call_name, &data) == 0)
 	{
-		printf("%s\n", path);
-		return (0);
-	}
-	else if (path_validator(path, call_name, &data))
-	{
+		if(S_ISREG(data.st_mode))
+		{
+			printf("%s\n", path);
+			return (0);
+		}
 		dir = opendir(path);
 		if (dir == NULL)
 		{
@@ -35,8 +32,8 @@ int list_directory(const char *path, char *call_name, int *flags)
 		while ((entry = readdir(dir)) != NULL)
 		{
 			entry_path = path_maker(path, entry->d_name);
-			lstat(entry_path, &data);
-			print_handler(&entry, &data, &flags);
+			print_handler(entry, &data, flags);
+			free(entry_path);
 		}
 		printf("\n");
 		closedir(dir);
@@ -46,15 +43,23 @@ int list_directory(const char *path, char *call_name, int *flags)
 }
 
 /**
- * entry_path- creates a direct path to a file
+ * path_maker- creates a direct path to a file
  * @path: the path to the parent directory
  * @name: the name of the file
  *
  * Return: the new path
  */
-char *entry_path(const char *path, char* name)
+char *path_maker(const char *path, char* name)
 {
-
+	int len_path = strlen(path);
+	int len_filename = strlen(name);
+	char *path_new = malloc(len_path + len_filename + 2);
+	if (path == NULL)
+	{
+		exit(EXIT_FAILURE);
+	}
+	sprintf(path_new, "%s/%s", path, name);
+	return (path_new);
 }
 
 /**
@@ -70,19 +75,24 @@ void print_handler(struct dirent *entry, struct stat *data, int *flags)
 {
 	if (!flags[0])
 	{
-		printf("%s ", entry->d_name);
+		if (*entry->d_name != '.')
+		{
+			printf("%s ", entry->d_name);
+		}
 	}
 	else
 	{
-		if (flags[1] && *entry->d_name == ".")
+		int is_dot = strcmp(entry->d_name, ".");
+		int is_dot_dot = strcmp(entry->d_name, "..");
+		if (!flags[1] && *entry->d_name == '.')
 			return;
-		if (flags[2] && (entry->d_name == "." || entry->d_name == ".."))
+		if (flags[2] && (is_dot || is_dot_dot))
 			return;
 		if (flags[3])
-		{
 			printf("%s\n", entry->d_name);
-		}
-		/* flags 4, long format code here) */
+		if (flags[4])
+			printf("Placeholder for list: %ld\n", data->st_size);
+		printf("%s ", entry->d_name);
 	}
 }
 
@@ -103,10 +113,11 @@ int main(int argc, char **argv)
 	flag_init(flags, argc, argv);
 	if (argc <= 2)
 	{
-		if (flags[0] || argc < 2)
+		if (!flags[0] || argc < 2)
 		{
 			path = ".";
 			list_directory(path, argv[0], flags);
+			return (0);
 		}
 		path = argv[1];
 		if (list_directory(path, argv[0], flags) == -1)
@@ -119,7 +130,7 @@ int main(int argc, char **argv)
 		while (i <= argc - 1)
 		{
 			path = argv[i];
-			if (path_validator(path, argv(0), &path_data) == -1)
+			if (path_validator(path, argv[0], &path_data) == -1)
 			{
 				i++;
 				continue;

@@ -38,53 +38,53 @@ int path_validator(const char *path, char *call_name, struct stat *path_data)
 	}
 	else
 	{
-		if (lstat(path, &path_data) == -1)
+		if (lstat(path, path_data) == -1)
 		{
-			error_handler(call_name, path, -1)
+			error_handler(call_name, path, -1);
 			return (-1);
 		}
-		else if (path_data.st_mode & !S_IXUSR)
+		else if (!(path_data->st_mode & S_IXUSR))
 		{
-			error_handler(call_name, path, -2)
+			error_handler(call_name, path, -2);
 			return (-1);
 		}
 		return (0);
 	}
 }
 
-void flag_init(int argc, char **argv)
+void flag_init(int *flags, int argc, char **argv)
 {
 	for (int i = 0; i < argc; i++)
 	{
-		if ((argv[i][0]) != '-')
+		if ((argv[i][0]) == '-')
 		{
 			flags[0] = 1;
-			continue;
-		}
-		int j = 1;
-		while (argv[i][j] != '\0')
-		{
-			if (argv[i][j] == 'a')
+			int j = 1;
+			while (argv[i][j] != '\0')
 			{
-				flags[1] = 1;
-			}
-			else if (argv[i][j] == 'A')
-			{
-				flags[2] = 1;
-			}
-			else if (argv[i][j] == '1')
-			{
-				flags[3] = 1;
-			}
-			else if (argv[i][j] == 'l')
-			{
-				flags[4] = 1;
-			}
-			else
-			{
-				fprintf(stderr,
-					"%s: invalid option -- %s\n", argv[0], argv[i][j]);
-				exit(EXIT_FAILURE);
+				if (argv[i][j] == 'a')
+				{
+					flags[1] = 1;
+				}
+				else if (argv[i][j] == 'A')
+				{
+					flags[2] = 1;
+				}
+				else if (argv[i][j] == '1')
+				{
+					flags[3] = 1;
+				}
+				else if (argv[i][j] == 'l')
+				{
+					flags[4] = 1;
+				}
+				else
+				{
+					fprintf(stderr,
+						"%s: invalid option -- %s\n", argv[0], argv[i]);
+					exit(EXIT_FAILURE);
+				}
+				j++;
 			}
 		}
 	}

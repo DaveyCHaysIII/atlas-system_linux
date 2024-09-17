@@ -127,7 +127,10 @@ void multi_print(int argc, char **argv, struct stat *path_data, int *flags)
 			i++;
 			continue;
 		}
-		printf("%s:\n", path);
+		if (S_ISDIR(path_data->st_mode))
+		{
+			printf("%s:\n", path);
+		}
 		list_directory(argv[i], argv[0], flags);
 		printf("\n");
 		i++;

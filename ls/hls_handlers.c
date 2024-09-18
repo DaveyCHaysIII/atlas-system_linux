@@ -149,6 +149,7 @@ void print_file_info(struct dirent *entry, struct stat *file_stat)
 	struct passwd *pwd;
 	struct group *grp;
 	char *mod_time;
+	char formatted_time[13];
 
 	printf((S_ISDIR(file_stat->st_mode)) ? "d" : "-");
 	printf((file_stat->st_mode & S_IRUSR) ? "r" : "-");
@@ -179,8 +180,9 @@ void print_file_info(struct dirent *entry, struct stat *file_stat)
 	printf("%ld ", file_stat->st_size);
 
 	mod_time = ctime(&file_stat->st_mtime);
-	mod_time[24] = '\0';
-	printf("%s ", mod_time);
+	snprintf(formatted_time, sizeof(formatted_time), "%.3s %.2s %.5s",
+             mod_time + 4, mod_time + 8, mod_time + 11);
+	printf("%s ", formatted_time);
 
 	printf("%s\n", entry->d_name);
 }

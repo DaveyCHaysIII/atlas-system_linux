@@ -180,8 +180,6 @@ void print_file_info(struct dirent *entry, struct stat *file_stat)
 	printf("%ld ", file_stat->st_size);
 
 	mod_time = ctime(&file_stat->st_mtime);
-	/*sprintf(formatted_time, "%.3s %.2s %.5s",
-             mod_time + 4, mod_time + 8, mod_time + 11);*/
 	sprintf(formatted_time, "%.3s %.2s %.4s",
 		mod_time + 4, mod_time + 8, mod_time + 20);
 	printf("%s ", formatted_time);

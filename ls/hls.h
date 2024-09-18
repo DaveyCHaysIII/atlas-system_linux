@@ -7,6 +7,12 @@
 #include<dirent.h>
 #include<sys/stat.h>
 #include<string.h>
+/* extra libraries JUST for -l*/
+#include<time.h>
+#include<sys/stat.h>
+#include<pwd.h>
+#include<grp.h>
+#include<unistd.h>
 
 /* hls.c */
 int list_directory(const char *, char *, int *);
@@ -18,6 +24,7 @@ void error_handler(char *, const char*, int);
 int path_validator(const char *, char *, struct stat *);
 void flag_init(int *, int, char **);
 void multi_print(int, char **, struct stat *, int *);
+void print_file_info(struct dirent *, struct stat *);
 
 /*hls_tools */
 int _strlen(const char *);

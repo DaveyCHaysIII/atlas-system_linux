@@ -32,6 +32,7 @@ int list_directory(const char *path, char *call_name, int *flags)
 		while ((entry = readdir(dir)) != NULL)
 		{
 			entry_path = path_maker(path, entry->d_name);
+			lstat(entry_path, &data);
 			print_handler(entry, &data, flags);
 			free(entry_path);
 		}
@@ -98,7 +99,9 @@ void print_handler(struct dirent *entry, struct stat *data, int *flags)
 		else if (flags[3])
 			printf("%s\n", entry->d_name);
 		else if (flags[4])
-			printf("Placeholder for list: %ld\n", data->st_size);
+		{
+			print_file_info(entry, data);
+		}
 		else
 			printf("%s ", entry->d_name);
 	}

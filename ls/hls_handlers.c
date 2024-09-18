@@ -136,3 +136,51 @@ void multi_print(int argc, char **argv, struct stat *path_data, int *flags)
 		i++;
 	}
 }
+
+/**
+ * print_file_info- prints the -l version of a file
+ * @entry: struct dirent for file
+ * @file_stat: the struct stat that contains the file information
+ *
+ * Return: no return
+ */
+void print_file_info(struct dirent *entry, struct stat *file_stat)
+{
+	struct passwd *pwd;
+	struct group *grp;
+	char *mod_time;
+
+	printf((S_ISDIR(file_stat->st_mode)) ? "d" : "-");
+	printf((file_stat->st_mode & S_IRUSR) ? "r" : "-");
+	printf((file_stat->st_mode & S_IWUSR) ? "w" : "-");
+	printf((file_stat->st_mode & S_IXUSR) ? "x" : "-");
+	printf((file_stat->st_mode & S_IRGRP) ? "r" : "-");
+	printf((file_stat->st_mode & S_IWGRP) ? "w" : "-");
+	printf((file_stat->st_mode & S_IXGRP) ? "x" : "-");
+	printf((file_stat->st_mode & S_IROTH) ? "r" : "-");
+	printf((file_stat->st_mode & S_IWOTH) ? "w" : "-");
+	printf((file_stat->st_mode & S_IXOTH) ? "x" : "-");
+	printf(" ");
+
+	printf("%lu ", file_stat->st_nlink);
+
+	pwd = getpwuid(file_stat->st_uid);
+	grp = getgrgid(file_stat->st_gid);
+	if (pwd)
+		printf("%s ", pwd->pw_name);
+	else
+		printf("%d ", file_stat->st_uid);
+
+	if (grp)
+		printf("%s ", grp->gr_name);
+	else
+		printf("%d ", file_stat->st_gid);
+
+	printf("%ld ", file_stat->st_size);
+
+	mod_time = ctime(&file_stat->st_mtime);
+	mod_time[24] = '\0';
+	printf("%s ", mod_time);
+
+	printf("%s\n", entry->d_name);
+}

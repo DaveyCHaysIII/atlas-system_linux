@@ -76,9 +76,6 @@ def search_and_replace_in_heap(
             mem.seek(heap_start + offset)
             mem.write(replace_bytes)
 
-            print(f"Replaced '{search_string}' "
-                  f"with '{replace_string}' at offset {offset:#x}")
-
     except PermissionError:
         print(f"Permission denied. You might need to run the script as root.")
         sys.exit(1)

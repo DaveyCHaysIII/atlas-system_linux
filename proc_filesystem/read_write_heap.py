@@ -52,7 +52,7 @@ def search_and_replace_in_heap(
 
     mem_file = f"/proc/{pid}/mem"
 
-    if len(search_string) != len(replace_string):
+    if len(search_string) !> len(replace_string):
         print(
                 "Error: search and replace string must be same length.")
         sys.exit(1)

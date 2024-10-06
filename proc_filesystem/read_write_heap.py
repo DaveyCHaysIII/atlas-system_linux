@@ -17,7 +17,7 @@ def parse_args():
     if len(sys.argv) == 4:
         replace_string = sys.argv[3]
     else:
-        replace_string = '\x00' * len(search_string)
+        replace_string = ""
 
     return pid, search_string, replace_string
 

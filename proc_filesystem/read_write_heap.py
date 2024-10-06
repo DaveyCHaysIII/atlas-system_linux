@@ -18,6 +18,7 @@ def parse_args():
         replace_string = sys.argv[3]
     else:
         replace_string = ""
+        print("SUCCESS!")
 
     return pid, search_string, replace_string
 

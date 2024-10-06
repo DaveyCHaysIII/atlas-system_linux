@@ -93,7 +93,6 @@ def search_and_replace_in_heap(
 if __name__ == "__main__":
     pid, search_string, replace_string = parse_args()
     heap_start, heap_end = find_heap_region(pid)
-    print(f"Heap starts at: {heap_start:#x}, ends at: {heap_end:#x}")
     search_and_replace_in_heap(
                                 pid,
                                 heap_start,

@@ -7,13 +7,17 @@ import sys
 def parse_args():
     """Check if the correct number of arguments is provided"""
 
-    if len(sys.argv) != 4:
+    if len(sys.argv) < 3:
         print("Usage: read_write_heap.py pid search_string replace_string")
         sys.exit(1)
 
     pid = sys.argv[1]
     search_string = sys.argv[2]
-    replace_string = sys.argv[3]
+
+    if len(sys.argv) == 4:
+        replace_string = sys.argv[3]
+    else:
+        replace_string = '\x00' * len(search_string)
 
     return pid, search_string, replace_string
 

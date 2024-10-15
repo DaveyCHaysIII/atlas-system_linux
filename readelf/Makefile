@@ -4,17 +4,12 @@ NAME := 0-hreadelf
 
 SRC := $(wildcard *.c)
 
-OBJ := $(SRC:.c=.o)
-
 .PHONY := all clean
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
-	$(CC) -o $@ $(CFLAGS) $(OBJ)
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(NAME):
+	$(CC) $(CFLAGS) $(SRC) -o $@
 
 clean:
-	rm -f $(OBJ)
+	rm -f $(NAME)

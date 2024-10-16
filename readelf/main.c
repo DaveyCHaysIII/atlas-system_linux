@@ -2,7 +2,32 @@
 
 Filestate filestate;
 
-int validate_header()
+/**
+ * error_handler - handles errors
+ * @error: the error to handle
+ *
+ * Return: no retrun
+ */
+void error_handler(char *error)
+{
+	fprintf(stderr, "%s: %s: %s\n",
+			filestate.program_name,
+			filestate.exec_name,
+			error);
+
+	if (fcntl(filestate.fd, F_GETFD) != -1)
+	{
+		close(filestate.fd);
+	}
+	exit(EXIT_FAILURE);
+}
+
+/**
+ * validate_header - valdiates the header
+ *
+ * Return: no return
+ */
+int validate_header(void)
 {
 
 	int fd = filestate.fd;
@@ -21,7 +46,7 @@ int validate_header()
 		close(fd);
 		exit(EXIT_FAILURE);
 	}
-	
+
 	if (e_ident[EI_DATA] == ELFDATA2LSB)
 		filestate.endiFlag = 1;
 
@@ -41,6 +66,13 @@ int validate_header()
 	}
 }
 
+/**
+ * init - initializes the program
+ * @argc: number of args passed
+ * @argv: arg vector
+ *
+ * Return: no return
+ */
 void init(int argc, char **argv)
 {
 	if (argc != 2)
@@ -50,7 +82,7 @@ void init(int argc, char **argv)
 	}
 	filestate.program_name = argv[0];
 	filestate.exec_name = argv[1];
-	filestate.endiflag = 0;
+	filestate.endiFlag = 0;
 	filestate.fd = open(filestate.exec_name, O_RDONLY);
 	if (filestate.fd == 0)
 	{
@@ -58,17 +90,19 @@ void init(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 	int eclass = validate_header();
+
+	lseek(filestate.fd, 0, SEEK_SET);
 	if (eclass == 1)
 	{
-		read(filestate.fd, 
+		read(filestate.fd,
 			&filestate.ehdr.ehdr32, sizeof(Elf32_Ehdr));
 		if (filestate.endiFlag < 0)
 			swap_all_endians32(filestate.ehdr.ehdr32);
-		print_elf32(); 
+		print_elf32();
 	}
 	else
 	{
-		read(filestate.fd, 
+		read(filestate.fd,
 			&filestate.ehdr.ehdr64, sizeof(Elf64_Ehdr));
 		if (filestate.endiFlag < 0)
 			swap_all_endians64(filestate.ehdr.ehdr64);
@@ -76,7 +110,13 @@ void init(int argc, char **argv)
 	}
 }
 
-
+/**
+ * main - entry point of program
+ * @argc: number of args passed
+ * @argv: args passed
+ *
+ * Return: Success
+ */
 int main(int argc, char **argv)
 {
 	init(argc, argv);

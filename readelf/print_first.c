@@ -40,7 +40,7 @@ void print_data(unsigned char e_ident[EI_NIDENT])
 	if (e_ident[EI_DATA] == ELFDATA2LSB)
 		printf("2's complement, little endian\n");
 	else if (e_ident[EI_DATA] == ELFDATA2MSB)
-		printf("2's complement, big-endian\n");
+		printf("2's complement, big endian\n");
 	else
 		printf("Invalid data encoding\n");
 }

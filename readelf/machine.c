@@ -14,7 +14,7 @@ void machine_print_first(uint16_t e_machine)
 		printf("AT&T WE 32100\n");
 		break;
 	case EM_SPARC:
-		printf("SPARC\n");
+		printf("Sparc\n");
 		break;
 	case EM_386:
 		printf("Intel 80386\n");

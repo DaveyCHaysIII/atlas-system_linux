@@ -52,6 +52,7 @@ void print_abi(unsigned char e_ident[EI_NIDENT])
 
 /**
  * print_abi_ver - prints the abi version
+ * @e_ident: the first line of the header
  *
  * Return: no return
  */

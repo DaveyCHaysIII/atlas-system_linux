@@ -45,7 +45,7 @@ void print_abi(unsigned char e_ident[EI_NIDENT])
 		printf("Standalone (embedded) application\n");
 		break;
 	default:
-		printf("<unknown :%u>\n", e_ident[EI_OSABI]);
+		printf("<unknown: %x>\n", e_ident[EI_OSABI]);
 		break;
 	}
 }

@@ -18,13 +18,13 @@ void print_abi(unsigned char e_ident[EI_NIDENT])
 		printf("HP-UX\n");
 		break;
 	case ELFOSABI_NETBSD:
-		printf("NetBSD\n");
+		printf("UNIX - NetBSD\n");
 		break;
 	case ELFOSABI_LINUX:
 		printf("Linux\n");
 		break;
 	case ELFOSABI_SOLARIS:
-		printf("Solaris\n");
+		printf("UNIX - Solaris\n");
 		break;
 	case ELFOSABI_AIX:
 		printf("AIX\n");
@@ -45,7 +45,7 @@ void print_abi(unsigned char e_ident[EI_NIDENT])
 		printf("Standalone (embedded) application\n");
 		break;
 	default:
-		printf("Unknown (0x%x)\n", e_ident[EI_OSABI]);
+		printf("<unknown (0x%x)>\n", e_ident[EI_OSABI]);
 		break;
 	}
 }
@@ -55,9 +55,10 @@ void print_abi(unsigned char e_ident[EI_NIDENT])
  *
  * Return: no return
  */
-void print_abi_ver(void)
+void print_abi_ver(unsigned char e_ident[EI_NIDENT])
 {
-	printf("  ABI Version:                       0\n");
+	printf("  ABI Version:                       ");
+	printf("%u\n", e_ident[EI_ABIVERSION]);
 }
 
 /**
@@ -75,10 +76,10 @@ void print_type(uint16_t e_type)
 		printf("No file type\n");
 		break;
 	case ET_REL:
-		printf("Relocatable file\n");
+		printf("REL (Relocatable file)\n");
 		break;
 	case ET_EXEC:
-		printf("Executable file\n");
+		printf("EXEC (Executable file)\n");
 		break;
 	case ET_DYN:
 		printf("DYN (Position-Independant Executable file)\n");
@@ -113,5 +114,5 @@ void print_machine(uint16_t e_machine)
 void print_version(uint32_t e_version)
 {
 	printf("  Version:                           ");
-	printf("%u\n", (unsigned int)e_version);
+	printf("0x%x\n", (unsigned int)e_version);
 }

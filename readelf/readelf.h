@@ -70,7 +70,7 @@ void print_ident_version(unsigned char e_ident[EI_NIDENT]);
 
 /* PRINT_SECOND.C */
 void print_abi(unsigned char e_ident[EI_NIDENT]);
-void print_abi_ver(void);
+void print_abi_ver(unsigned char e_ident[EI_NIDENT]);
 void print_type(uint16_t e_type);
 void print_machine(uint16_t e_machine);
 void print_version(uint32_t e_version);

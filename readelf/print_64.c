@@ -20,7 +20,7 @@ void print_elf64(void)
 	print_entry64(filestate.ehdr.ehdr64.e_entry);
 	print_progstart64(filestate.ehdr.ehdr64.e_phoff);
 	print_sectstart64(filestate.ehdr.ehdr64.e_shoff);
-	print_flags(filestate.ehdr.ehdr64.e_flags);
+	print_flags();
 	print_headersize(filestate.ehdr.ehdr64.e_ehsize);
 	print_progheadersize(filestate.ehdr.ehdr64.e_phentsize);
 	print_numprograms(filestate.ehdr.ehdr64.e_phnum);

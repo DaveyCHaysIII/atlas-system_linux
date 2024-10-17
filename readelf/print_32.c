@@ -17,10 +17,10 @@ void print_elf32(void)
 	print_type(filestate.ehdr.ehdr32.e_type);
 	print_machine(filestate.ehdr.ehdr32.e_machine);
 	print_version(filestate.ehdr.ehdr32.e_version);
-	print_entry64(filestate.ehdr.ehdr32.e_entry);
-	print_progstart64(filestate.ehdr.ehdr32.e_phoff);
-	print_sectstart64(filestate.ehdr.ehdr32.e_shoff);
-	print_flags(filestate.ehdr.ehdr32.e_flags);
+	print_entry32(filestate.ehdr.ehdr32.e_entry);
+	print_progstart32(filestate.ehdr.ehdr32.e_phoff);
+	print_sectstart32(filestate.ehdr.ehdr32.e_shoff);
+	print_flags();
 	print_headersize(filestate.ehdr.ehdr32.e_ehsize);
 	print_progheadersize(filestate.ehdr.ehdr32.e_phentsize);
 	print_numprograms(filestate.ehdr.ehdr32.e_phnum);

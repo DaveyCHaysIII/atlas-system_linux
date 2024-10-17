@@ -96,16 +96,16 @@ void init(int argc, char **argv)
 	{
 		read(filestate.fd,
 			&filestate.ehdr.ehdr32, sizeof(Elf32_Ehdr));
-		if (filestate.endiFlag < 0)
-			swap_all_endians32(filestate.ehdr.ehdr32);
+		if (filestate.endiFlag < 1)
+			swap_all_endians32();
 		print_elf32();
 	}
 	else
 	{
 		read(filestate.fd,
 			&filestate.ehdr.ehdr64, sizeof(Elf64_Ehdr));
-		if (filestate.endiFlag < 0)
-			swap_all_endians64(filestate.ehdr.ehdr64);
+		if (filestate.endiFlag < 1)
+			swap_all_endians64();
 		print_elf64();
 	}
 }
@@ -120,5 +120,6 @@ void init(int argc, char **argv)
 int main(int argc, char **argv)
 {
 	init(argc, argv);
+	close(filestate.fd);
 	return (EXIT_SUCCESS);
 }

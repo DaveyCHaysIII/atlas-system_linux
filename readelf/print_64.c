@@ -62,5 +62,5 @@ void print_progstart64(Elf64_Off e_phoff)
 void print_sectstart64(Elf64_Off e_shoff)
 {
 	printf("  Start of section headers:          ");
-	printf("%lu(bytes into file)\n", (unsigned long)e_shoff);
+	printf("%lu (bytes into file)\n", (unsigned long)e_shoff);
 }

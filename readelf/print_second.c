@@ -45,7 +45,7 @@ void print_abi(unsigned char e_ident[EI_NIDENT])
 		printf("Standalone (embedded) application\n");
 		break;
 	default:
-		printf("<unknown (0x%x)>\n", e_ident[EI_OSABI]);
+		printf("<unknown :%u>\n", e_ident[EI_OSABI]);
 		break;
 	}
 }
@@ -82,7 +82,7 @@ void print_type(uint16_t e_type)
 		printf("EXEC (Executable file)\n");
 		break;
 	case ET_DYN:
-		printf("DYN (Position-Independant Executable file)\n");
+		printf("DYN (Shared object file)\n");
 		break;
 	case ET_CORE:
 		printf("Core file\n");

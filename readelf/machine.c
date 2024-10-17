@@ -14,7 +14,7 @@ void machine_print_first(uint16_t e_machine)
 		printf("AT&T WE 32100\n");
 		break;
 	case EM_SPARC:
-		printf("Sun Microsystems SPARC\n");
+		printf("SPARC\n");
 		break;
 	case EM_386:
 		printf("Intel 80386\n");
@@ -75,7 +75,7 @@ void machine_print_second(uint16_t e_machine)
 		printf("Intel Itanium\n");
 		break;
 	case EM_X86_64:
-		printf("Advanced Micro Devices x86-64\n");
+		printf("Advanced Micro Devices X86-64\n");
 		break;
 	case EM_VAX:
 		printf("DEC Vax\n");

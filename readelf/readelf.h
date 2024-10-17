@@ -6,7 +6,6 @@
 #include <elf.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <stdint.h>
 
 /**
  * struct Filestate - carries state information of header

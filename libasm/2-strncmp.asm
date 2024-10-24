@@ -19,7 +19,7 @@ asm_strncmp:
 	je .def_done
 	cmp bl, 0
 	je .greater
-	cmp al, bl
+	cmp bl, al
 	jl .lesser
 	jg .greater
 	inc rdi

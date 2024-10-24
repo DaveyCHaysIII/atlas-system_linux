@@ -19,7 +19,7 @@ asm_strncmp:
 	je .def_done
 	cmp bl, 0
 	je .greater
-	cmp bl, al
+	cmp al, bl
 	jl .lesser
 	jg .greater
 	inc rdi
@@ -28,7 +28,7 @@ asm_strncmp:
 	jmp .loop
 
 .def_done:
-	cmp bl, al
+	cmp al, bl
 	je .equal
 	jg .greater
 	jl .lesser

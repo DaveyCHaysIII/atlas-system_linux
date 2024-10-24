@@ -8,7 +8,7 @@ asm_strncmp:
 
 .loop:
 	test rdx, rdx
-	je .def_done
+	je .equal
 	mov al, [rdi]
 	mov bl, [rsi]
 	cmp al, 0
@@ -31,7 +31,7 @@ asm_strncmp:
 	jb .lesser
 
 .equal:
-	xor rax, rax
+	xor eax, eax
 	ret
 
 .greater:
@@ -41,4 +41,3 @@ asm_strncmp:
 .lesser:
 	mov rax, -1
 	ret
-

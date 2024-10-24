@@ -16,7 +16,9 @@ asm_strncmp:
 	cmp bl, 0
 	je .def_done
 	cmp al, bl
-	jne .sub_done
+	je .equal
+	jl .lesser
+	jg .greater
 	inc rdi
 	inc rsi
 	dec rdx
@@ -39,10 +41,4 @@ asm_strncmp:
 .lesser:
 	mov rax, -1
 	ret
-
-.sub_done:
-	sub al, bl
-	movsx rax, al
-	ret
-
 

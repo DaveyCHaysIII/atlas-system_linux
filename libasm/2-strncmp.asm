@@ -14,7 +14,7 @@ asm_strncmp:
 	cmp al, 0
 	je .def_done
 	cmp bl, 0
-	je .def_done
+	je .greater
 	cmp al, bl
 	je .equal
 	jl .lesser

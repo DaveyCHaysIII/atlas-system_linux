@@ -28,10 +28,10 @@ asm_strncmp:
 	jmp .loop
 
 .def_done:
-	cmp al, bl
+	cmp bl, al
 	je .equal
-	ja .greater
-	jb .lesser
+	jg .greater
+	jl .lesser
 
 .equal:
 	xor eax, eax

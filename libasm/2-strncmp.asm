@@ -5,6 +5,10 @@ section .text
 
 asm_strncmp:
 	xor rax, rax
+	test rdi, rdi
+	je .equal
+	test rsi, rsi
+	je .greater
 
 .loop:
 	test rdx, rdx
@@ -16,7 +20,6 @@ asm_strncmp:
 	cmp bl, 0
 	je .greater
 	cmp al, bl
-	je .equal
 	jl .lesser
 	jg .greater
 	inc rdi

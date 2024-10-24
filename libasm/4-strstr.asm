@@ -14,6 +14,8 @@ asm_strstr:
 	mov bl, byte [rsi]
 	cmp al, 0
 	je .null_done
+	cmp bl, 0
+	je .null_done
 	cmp al, bl
 	jne .next_char
 	xor r10, r10

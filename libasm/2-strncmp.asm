@@ -5,9 +5,9 @@ section .text
 
 asm_strncmp:
 	xor rax, rax
-	test rdi, rdi
+	test byte [rdi], byte [rdi]
 	je .equal
-	test rsi, rsi
+	test byte [rsi], byte [rsi]
 	je .greater
 	test rdx, rdx
 	je .equal

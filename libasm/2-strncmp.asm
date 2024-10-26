@@ -9,19 +9,18 @@ asm_strncmp:
 	je .equal
 	test rsi, rsi
 	je .greater
+	test rdx, rdx
+	je .equal
 
 .loop:
 	test rdx, rdx
-	je .equal
+	je .def_done
 	mov al, [rdi]
 	mov bl, [rsi]
 	cmp al, 0
 	je .def_done
 	cmp bl, 0
 	je .greater
-	cmp al, bl
-	jl .lesser
-	jg .greater
 	inc rdi
 	inc rsi
 	dec rdx
@@ -34,7 +33,7 @@ asm_strncmp:
 	jl .lesser
 
 .equal:
-	xor eax, eax
+	xor rax, rax
 	ret
 
 .greater:

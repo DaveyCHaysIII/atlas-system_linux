@@ -5,12 +5,12 @@ section .text
 
 asm_strncmp:
 	xor rax, rax
-	test byte [rdi], byte [rdi]
+	cmp byte [rdi], 0
 	je .equal
-	test byte [rsi], byte [rsi]
+	cmp byte [rsi], 0
 	je .greater
 	test rdx, rdx
-	je .equal
+	jz .equal
 
 .loop:
 	test rdx, rdx
@@ -18,7 +18,7 @@ asm_strncmp:
 	mov al, [rdi]
 	mov bl, [rsi]
 	cmp al, 0
-	je .lesser
+	je .greater
 	cmp bl, 0
 	je .lesser
 	inc rdi

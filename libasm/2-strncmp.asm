@@ -17,9 +17,9 @@ asm_strncmp:
 	je .def_done
 	mov al, [rdi]
 	mov bl, [rsi]
-	cmp al, 0
+	cmp byte [rsi], 0
 	je .greater
-	cmp bl, 0
+	cmp byte [rdi], 0
 	je .lesser
 	inc rdi
 	inc rsi

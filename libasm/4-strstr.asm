@@ -4,10 +4,10 @@ section .text
 	global asm_strstr
 
 asm_strstr:
-	test rdi, rdi
-	jz .null_done
-	test rsi, rsi
-	js .null_done
+	cmp byte [rsi], 0
+	je .found
+	cmp byte [rdi], 0
+	je .null_done
 
 .main_loop:
 	mov al, byte [rdi]

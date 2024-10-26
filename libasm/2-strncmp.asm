@@ -18,9 +18,9 @@ asm_strncmp:
 	mov al, [rdi]
 	mov bl, [rsi]
 	cmp al, 0
-	je .equal
+	je .lesser
 	cmp bl, 0
-	je .equal
+	je .lesser
 	inc rdi
 	inc rsi
 	dec rdx

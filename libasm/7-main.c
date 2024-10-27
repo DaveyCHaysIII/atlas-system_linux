@@ -12,11 +12,10 @@
  */
 int main(void)
 {
-	asm_puts("Holberton");
-   /* assert(asm_puts("H") == 1);
+    assert(asm_puts("H") == 1);
     assert(asm_puts("olberton") == 8);
     assert(asm_puts(" School\n") == 8);
 
-    printf("All good!\n");*/
+    printf("All good!\n");
     return (EXIT_SUCCESS);
 }

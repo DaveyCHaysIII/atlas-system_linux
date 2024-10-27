@@ -6,18 +6,16 @@ section .text
 asm_puts:
 	push rbp
 	mov rbp, rsp
-	push rsi
-	push rdx
+
+	push rdi
 	call asm_strlen
 	mov rdx, rax
-
-	mov rax, 1
-	mov rsi, rdi
+	mov rsi, [rsp]
 	mov rdi, 1
+	mov rax, 1
 	syscall
 
-	pop rdx
-	pop rsi
+	pop rdi
 	mov rsp, rbp
 	pop rbp
 	ret

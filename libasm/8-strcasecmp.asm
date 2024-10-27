@@ -47,11 +47,13 @@ asm_strcasecmp:
 	ret
 
 .greater:
+	xor rax, rax
 	sub al, bl
 	movsx rax, al
 	ret
 
 .lesser:
+	xor rax, rax
 	sub al, bl
 	movsx rax, al
 	ret

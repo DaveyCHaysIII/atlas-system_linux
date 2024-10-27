@@ -14,11 +14,19 @@ asm_strcasecmp:
 	cmp bl, 0
 	je .done
 
-.lower_check:
+.lower_check_al:
 	cmp al, 64
-	jg .lc_check
+	jl .lower_check_bl
+	cmp al, 91
+	jg .lower_check_bl
+	add al, 32
+
+.lower_check_bl:
 	cmp bl, 64
-	jg .lc_check
+	jl .compare
+	cmp bl, 91
+	jg .compare
+	add bl, 32
 	jmp .compare
 
 .compare:
@@ -27,21 +35,6 @@ asm_strcasecmp:
 	inc rdi
 	inc rsi
 	jmp .loop
-
-.lc_check:
-	cmp al, 91
-	jl .lc_offset_al
-	cmp bl, 91
-	jl .lc_offset_bl
-	jmp .compare
-
-.lc_offset_al:
-	add al, 32
-	jmp .lower_check
-
-.lc_offset_bl:
-	add bl, 32
-	jmp .compare
 
 .done:
 	cmp al, bl

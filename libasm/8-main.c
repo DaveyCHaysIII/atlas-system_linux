@@ -8,7 +8,7 @@
 #define S1  "Holberton School"
 #define S2  "HOLBERTON SCHOOL"
 #define S3  "Holberton SchooL"
-#define S4  "holberton socool"
+#define S4  "holberton"
 
 /**
  * main - Program entry point
@@ -17,6 +17,8 @@
  */
 int main(void)
 {
+	printf("strcasecmp(%s, %s) == %d\n", S4, S1, strcasecmp(S4, S1));
+	printf("asm_strcasecmp(%s, %s) == %d\n", S4, S1, asm_strcasecmp(S4, S1));
     assert(strcasecmp(S1, S1) == asm_strcasecmp(S1, S1));
     assert(strcasecmp(S1, S2) == asm_strcasecmp(S1, S2));
     assert(strcasecmp(S1, S3) == asm_strcasecmp(S1, S3));

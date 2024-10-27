@@ -47,10 +47,10 @@ asm_strcasecmp:
 
 .greater:
 	sub al, bl
-	movsx rax, eax
+	movsx rax, al
 	ret
 
 .lesser:
 	sub al, bl
-	movsx rax, eax
+	movsx rax, al
 	ret

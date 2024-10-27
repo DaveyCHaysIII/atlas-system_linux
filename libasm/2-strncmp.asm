@@ -37,9 +37,13 @@ asm_strncmp:
 	ret
 
 .greater:
-	mov rax, 1
+	xor rax, rax
+	sub al, bl
+	movsx rax, al
 	ret
 
 .lesser:
-	mov rax, -1
+	xor rax, rax
+	sub al, bl
+	movsx rax, al
 	ret

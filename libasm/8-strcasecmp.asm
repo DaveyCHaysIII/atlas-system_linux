@@ -39,21 +39,19 @@ asm_strcasecmp:
 .done:
 	cmp al, bl
 	je .equal
-	ja .greater
-	jb .lesser
+	jg .greater
+	jl .lesser
 
 .equal:
 	xor rax, rax
 	ret
 
 .greater:
-	xor rax, rax
 	sub al, bl
 	movsx rax, al
 	ret
 
 .lesser:
-	xor rax, rax
 	sub al, bl
 	movsx rax, al
 	ret

@@ -1,49 +1,58 @@
 BITS 64
 
-section .text:
+section .text
 	global asm_strcasecmp
 
 asm_strcasecmp:
-	push rbp
-	mov rbp, rsp
-	push rbx
+	xor rax, rax
 
-_while:
-	movzx eax, byte [rdi]
-	movzx ebx, byte [rsi]
+.loop:
+	mov al, [rdi]
+	mov bl, [rsi]
 	cmp al, 0
-	jne _al_case
+	je .done
 	cmp bl, 0
-	jne _bl_case
-	jmp _done
+	je .done
 
-_continue:
+.lower_check_al:
+	cmp al, 64
+	jl .lower_check_bl
+	cmp al, 91
+	jg .lower_check_bl
+	add al, 32
+
+.lower_check_bl:
+	cmp bl, 64
+	jl .compare
+	cmp bl, 91
+	jg .compare
+	add bl, 32
+	jmp .compare
+
+.compare:
+	cmp al, bl
+	jne .done
 	inc rdi
 	inc rsi
-	jmp _while
+	jmp .loop
 
-_al_case:
-	cmp al, 65
-	jl _bl_case
-	cmp al, 90
-	jg _bl_case
-	add ax, 32
-
-_bl_case:
-	cmp bl, 65
-	jl _compare
-	cmp bl, 90
-	jg _compare
-	add bx, 32
-
-_compare:
+.done:
 	cmp al, bl
-	je _continue
-	jmp _done
+	je .equal
+	ja .greater
+	jb .lesser
 
-_done:
-	sub rax, rbx
-	pop rbx
-	mov rsp, rbp
-	pop rbp
+.equal:
+	xor rax, rax
 	ret
+
+.greater:
+	sub al, bl
+	movsx rax, al
+	ret
+
+.lesser:
+	sub al, bl
+	movsx rax, al
+	ret
+

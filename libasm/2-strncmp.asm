@@ -6,7 +6,7 @@ section .text
 asm_strncmp:
 	xor rax, rax
 	cmp byte [rdi], 0
-	je .equal
+	je .def_done
 	cmp byte [rsi], 0
 	je .greater
 	test rdx, rdx

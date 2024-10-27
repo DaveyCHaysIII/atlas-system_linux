@@ -17,8 +17,8 @@
  */
 int main(void)
 {
-	printf("strncmp(%s, %s, %lu) == %d\n", S1, S4, strlen(S1), strncmp(S1, S4, strlen(S1)));
-	printf("asm_strncmp(%s, %s, %lu) == %d\n", S1, S4, strlen(S1), asm_strncmp(S1, S4, strlen(S1)));
+	printf("strncmp(%s, %s, %lu) == %d\n", S1, S3, strlen(S1), strncmp(S1, S3, strlen(S1)));
+	printf("asm_strncmp(%s, %s, %lu) == %d\n", S1, S3, strlen(S1), asm_strncmp(S1, S3, strlen(S1)));
     assert(strncmp(S1, S3, 1) == asm_strncmp(S1, S3, 1));
     assert(strncmp(S1, S3, 11) == asm_strncmp(S1, S3, 11));
     assert(strncmp(S1, S3, 15) == asm_strncmp(S1, S3, 15));

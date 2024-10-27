@@ -21,6 +21,9 @@ asm_strncmp:
 	je .greater
 	cmp al, 0
 	je .lesser
+	cmp al, bl
+	jg .greater
+	jl .lesser
 	inc rdi
 	inc rsi
 	dec rdx
@@ -41,7 +44,6 @@ asm_strncmp:
 	ret
 
 .lesser:
-	xor rax, rax
 	sub al, bl
 	movsx rax, al
 	ret

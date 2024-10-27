@@ -1,12 +1,16 @@
 BITS 64
 
 section .text
-	global asm_strcasecmp
+	global asm_strncasecmp
 
-asm_strcasecmp:
+asm_strncasecmp:
 	xor rax, rax
+	test rdx, rdx
+	jz .equal
 
 .loop:
+	test rdx, rdx
+	je .done
 	mov al, byte [rdi]
 	mov bl, byte [rsi]
 	cmp bl, 0
@@ -34,6 +38,7 @@ asm_strcasecmp:
 	jne .done
 	inc rdi
 	inc rsi
+	dec rdx
 	jmp .loop
 
 .done:
@@ -47,10 +52,10 @@ asm_strcasecmp:
 
 .greater:
 	sub al, bl
-	movsx rax, eax
+	movsx rax, al
 	ret
 
 .lesser:
 	sub al, bl
-	movsx rax, eax
+	movsx rax, al
 	ret

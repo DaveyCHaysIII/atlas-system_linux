@@ -7,12 +7,12 @@ asm_strcasecmp:
 	xor rax, rax
 
 .loop:
-	mov al, [rdi]
-	mov bl, [rsi]
-	cmp al, 0
-	je .done
+	mov al, byte [rdi]
+	mov bl, byte [rsi]
 	cmp bl, 0
-	je .done
+	je .greater
+	cmp al, 0
+	je .lesser
 
 .lower_check_al:
 	cmp al, 64
@@ -55,4 +55,3 @@ asm_strcasecmp:
 	sub al, bl
 	movsx rax, al
 	ret
-

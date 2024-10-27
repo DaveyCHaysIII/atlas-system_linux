@@ -15,11 +15,11 @@ asm_strncmp:
 .loop:
 	test rdx, rdx
 	je .def_done
-	mov al, [rdi]
-	mov bl, [rsi]
-	cmp byte [rsi], 0
+	mov al, byte [rdi]
+	mov bl, byte [rsi]
+	cmp bl, 0
 	je .greater
-	cmp byte [rdi], 0
+	cmp al, 0
 	je .lesser
 	inc rdi
 	inc rsi
@@ -29,15 +29,13 @@ asm_strncmp:
 .def_done:
 	cmp al, bl
 	je .equal
-	jg .greater
-	jl .lesser
+	jmp .lesser
 
 .equal:
 	xor rax, rax
 	ret
 
 .greater:
-	xor rax, rax
 	sub al, bl
 	movsx rax, al
 	ret

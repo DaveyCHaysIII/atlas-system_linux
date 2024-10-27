@@ -5,10 +5,6 @@ section .text
 
 asm_strncmp:
 	xor rax, rax
-	cmp byte [rdi], 0
-	je .lesser
-	cmp byte [rsi], 0
-	je .greater
 	test rdx, rdx
 	jz .equal
 

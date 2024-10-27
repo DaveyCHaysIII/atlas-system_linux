@@ -38,7 +38,6 @@ asm_strcasecmp:
 
 .done:
 	cmp al, bl
-	je .equal
 	jg .greater
 	jl .lesser
 
@@ -47,11 +46,9 @@ asm_strcasecmp:
 	ret
 
 .greater:
-	sub al, bl
-	movsx rax, al
+	mov rax, 1
 	ret
 
 .lesser:
-	sub al, bl
-	movsx rax, al
+	mov rax, -1
 	ret

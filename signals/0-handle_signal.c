@@ -10,6 +10,7 @@
 void do_instead(int signum)
 {
 	printf("Gotcha! [%d]\n", signum);
+	fflush(stdout);
 }
 
 /**
@@ -20,8 +21,7 @@ void do_instead(int signum)
 
 int handle_signal(void)
 {
-	signal(SIGINT, do_instead);
-	if (errno)
+	if(signal(SIGINT, do_instead) == SIGERR)
 		return (1);
 	else
 		return (0);

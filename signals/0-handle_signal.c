@@ -21,7 +21,7 @@ void do_instead(int signum)
 
 int handle_signal(void)
 {
-	if(signal(SIGINT, do_instead) == SIGERR)
+	if(signal(SIGINT, do_instead) == SIG_ERR)
 		return (1);
 	else
 		return (0);

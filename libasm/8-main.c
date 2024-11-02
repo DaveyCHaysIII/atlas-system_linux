@@ -29,18 +29,18 @@ void print_binary(int n) {
  */
 int main(void)
 {
-	int result1 = strcasecmp(S1, S4);
-	int result2 = asm_strcasecmp(S1, S4);
-	print_binary(strcasecmp(S1, S4));
-	print_binary(asm_strcasecmp(S1, S4));
-	printf("strcasecmp(%s, %s) == %d\n", S1, S4, result1);
-	printf("asm_strcasecmp(%s, %s) == %d\n", S1, S4, result2);
+	int result1 = strcasecmp(S4, S1);
+	int result2 = asm_strcasecmp(S4, S1);
+	print_binary(strcasecmp(S4, S1));
+	print_binary(asm_strcasecmp(S4, S1));
+	printf("strcasecmp(%s, %s) == %d\n", S4, S1, result1);
+	printf("asm_strcasecmp(%s, %s) == %d\n", S4, S1, result2);
 	printf("diff %d/%d: %d\n", result1, result2, (result1 - result2));
 	printf("hex str/asm: %x/%x\n", result1, result2);
     assert(strcasecmp(S1, S1) == asm_strcasecmp(S1, S1));
     assert(strcasecmp(S1, S2) == asm_strcasecmp(S1, S2));
     assert(strcasecmp(S1, S3) == asm_strcasecmp(S1, S3));
-    assert(strcasecmp(S1, S4) == asm_strcasecmp(S1, S4));
+    assert(strcasecmp(S1, S4) == asm_strcasecmp(S4, S1));
 
     printf("All good!\n");
     return (EXIT_SUCCESS);

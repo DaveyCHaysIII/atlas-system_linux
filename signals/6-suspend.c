@@ -10,7 +10,7 @@ void sigint_handler(int signum) {
 	printf("Signal received\n");
 	fflush(stdout);
 
-	exit(EXIT_SUCCESS);
+	_Exit(EXIT_SUCCESS);
 }
 
 /**
@@ -23,7 +23,7 @@ int main(void)
 {
 	if (signal(SIGINT, sigint_handler) == SIG_ERR)
 	{
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
 
 	pause();

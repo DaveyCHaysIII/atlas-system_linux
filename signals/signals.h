@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 int handle_signal(void);
 void do_instead(int);

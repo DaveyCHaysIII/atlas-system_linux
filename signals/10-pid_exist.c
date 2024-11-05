@@ -2,7 +2,7 @@
 #include <signal.h>
 
 /**
- * pid_exit - checks if a pid exists
+ * pid_exist - checks if a pid exists
  * @pid: the pid in question
  *
  * Return: pid or 0

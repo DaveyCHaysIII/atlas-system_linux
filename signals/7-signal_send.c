@@ -1,4 +1,4 @@
-#include "strings.h"
+#include "signals.h"
 
 /**
  * main - the main file

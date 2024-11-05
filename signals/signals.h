@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <signal.h>
 #include <errno.h>
+#include <string.h>
+#include <stdlib.h>
 
 int handle_signal(void);
 void do_instead(int);

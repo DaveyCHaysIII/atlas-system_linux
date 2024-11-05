@@ -8,17 +8,9 @@
 
 void (*current_handler_sigaction(void))(int)
 {
-	struct sigaction sa, old_sa;
+	struct sigaction old_sa;
 
 	if (sigaction(SIGINT, NULL, &old_sa) == -1)
-	{
-		return (NULL);
-	}
-
-	sa = old_sa;
-	sa.sa_handler = SIG_IGN;
-
-	if (sigaction(SIGINT, &sa, NULL) == -1)
 	{
 		return (NULL);
 	}

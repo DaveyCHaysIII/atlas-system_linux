@@ -21,7 +21,7 @@ void sigint_handler(int signum) {
 
 int main(void)
 {
-	if (signal(SIGINT, sigint_handler) == -1)
+	if (signal(SIGINT, sigint_handler) == SIG_ERR)
 	{
 		exit(EXIT_FAILURE);
 	}

@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -pedantic -std=c11
+CFLAGS = -Wall -Werror -Wextra -pedantic
 
 # Target executable
 TARGET = hnm

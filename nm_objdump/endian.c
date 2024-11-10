@@ -8,9 +8,9 @@
  *
  * Return: val or the swapped number
  */
-uint16_t swap_uint16(uint16_t val)
+uint16_t swap_16(uint16_t val)
 {
-	if (Filestate.endiflag = 0)
+	if (ENDIFLAG == 1)
 	{
 		return (val);
 	}
@@ -25,9 +25,9 @@ uint16_t swap_uint16(uint16_t val)
  *
  * Return: val or the swapped number
  */
-uint32_t swap_uint32(uint32_t val)
+uint32_t swap_32(uint32_t val)
 {
-	if (Filestate.endiflag = 0)
+	if (ENDIFLAG == 1)
 	{
 		return (val);
 	}
@@ -45,9 +45,9 @@ uint32_t swap_uint32(uint32_t val)
  *
  * Return: val or the swapped number
  */
-uint64_t swap_uint64(uint64_t val)
+uint64_t swap_64(uint64_t val)
 {
-	if (Filestate.endiflag = 0)
+	if (ENDIFLAG == 1)
 	{
 		return (val);
 	}
@@ -60,3 +60,16 @@ uint64_t swap_uint64(uint64_t val)
 		((val << 40) & 0x00FF000000000000) |
 		((val << 56) & 0xFF00000000000000));
 }
+
+void swap_ehdr(void)
+{
+	if (ECLASS == 0)
+		swap_32(SHOFF);
+	else
+		swap_64(SHOFF);
+
+	swap_16(SHNUM);
+	swap_16(SHENTSIZE);
+	swap_16(SHSTRNDX);
+}
+

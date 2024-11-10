@@ -1,4 +1,4 @@
-#include <nm.h>
+#include "nm.h"
 
 Filestate filestate;
 
@@ -15,9 +15,9 @@ void error_handler(char *error)
 			filestate.exec_name,
 			error);
 
-	if (fcntl(filestate.fd, F_GETFD) != -1)
+	if (fcntl(FD, F_GETFD) != -1)
 	{
-		close(filestate.fd);
+		close(FD);
 	}
 	exit(EXIT_FAILURE);
 }
@@ -84,25 +84,27 @@ void init(int argc, char **argv)
 	filestate.exec_name = argv[1];
 	filestate.endiflag = 0;
 	filestate.fd = open(filestate.exec_name, O_RDONLY);
-	if (filestate.fd == 0)
+	if (FD == 0)
 	{
 		perror("open");
 		exit(EXIT_FAILURE);
 	}
 	filestate.eclass = validate_header();
 
-	lseek(filestate.fd, 0, SEEK_SET);
-	if (filestate.eclass == 1)
+	lseek(FD, 0, SEEK_SET);
+	if (ECLASS == 1)
 	{
-		read(filestate.fd,
+		read(FD,
 			&filestate.ehdr.ehdr32, sizeof(Elf32_Ehdr));
-		elf32_findsymtable();
+		swap_ehdr();
+		elf32_symbolinit();
 	}
 	else
 	{
-		read(filestate.fd,
+		read(FD,
 			&filestate.ehdr.ehdr64, sizeof(Elf64_Ehdr));
-		elf64_findsymtable();
+		swap_ehdr();
+		elf64_symbolinit();
 	}
 }
 
@@ -116,6 +118,6 @@ void init(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-	init(int argc, char **argv);
+	init(argc, argv);
 	return (EXIT_SUCCESS);
 }

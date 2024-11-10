@@ -4,9 +4,8 @@
 /* includes */
 #include <stdio.h>
 #include <stdlib.h>
-#include <stderr.h>
 #include <elf.h>
-#include <fnctl.h>
+#include <fcntl.h>
 #include <unistd.h>
 
 /* typedef */
@@ -38,6 +37,16 @@ typedef struct Filestate
 
 extern Filestate filestate;
 
+/* defines */
+#define FD filestate.fd
+#define ENDIFLAG filestate.endiflag
+#define ECLASS filestate.eclass
+#define SHOFF ((ECLASS == ELFCLASS32) ? filestate.ehdr.ehdr32.e_shoff : filestate.ehdr.ehdr64.e_shoff)
+#define SHNUM ((ECLASS == ELFCLASS32) ? filestate.ehdr.ehdr32.e_shnum : filestate.ehdr.ehdr64.e_shnum)
+#define SHENTSIZE ((ECLASS == ELFCLASS32) ? filestate.ehdr.ehdr32.e_shentsize : filestate.ehdr.ehdr64.e_shentsize)
+#define SHDRSIZE (SHNUM * SHENTSIZE)
+#define SHSTRNDX ((ECLASS == ELFCLASS32) ? filestate.ehdr.ehdr32.e_shstrndx : filestate.ehdr.ehdr64.e_shstrndx)
+
 /* init */
 void error_handler(char *);
 int validate_header(void);
@@ -45,12 +54,17 @@ void init(int, char **);
 int main(int, char **);
 
 /* findsym */
-int elf32_getshtable(void);
-int elf64_getshtable(void);
+Elf32_Shdr *elf32_getshtable(void);
+Elf64_Shdr *elf64_getshtable(void);
+
+/* symbolinit */
+void elf32_symbolinit(void);
+void elf64_symbolinit(void);
 
 /* endian */
-uint16_t swap_uint16(uint16_t);
-uint32_t swap_uint32(uint32_t);
-uint64_t swap_uint64(uint64_t);
+uint16_t swap_16(uint16_t);
+uint32_t swap_32(uint32_t);
+uint64_t swap_64(uint64_t);
+void swap_ehdr(void);
 
 #endif

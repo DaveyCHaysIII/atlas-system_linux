@@ -7,6 +7,8 @@
 #include <elf.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <inttypes.h>
+#include <string.h>
 
 /* typedef */
 
@@ -25,6 +27,7 @@ typedef struct Filestate
 	int fd;
 	int endiflag;
 	int eclass;
+	char *strtable;
 	/**
 	 * union ehdr - holds the union
 	 */
@@ -46,7 +49,7 @@ extern Filestate filestate;
 #define SHENTSIZE ((ECLASS == ELFCLASS32) ? filestate.ehdr.ehdr32.e_shentsize : filestate.ehdr.ehdr64.e_shentsize)
 #define SHDRSIZE (SHNUM * SHENTSIZE)
 #define SHSTRNDX ((ECLASS == ELFCLASS32) ? filestate.ehdr.ehdr32.e_shstrndx : filestate.ehdr.ehdr64.e_shstrndx)
-
+#define STRTAB filestate.strtable
 /* init */
 void error_handler(char *);
 int validate_header(void);
@@ -60,6 +63,8 @@ Elf64_Shdr *elf64_getshtable(void);
 /* symbolinit */
 void elf32_symbolinit(void);
 void elf64_symbolinit(void);
+void print_symbols32(Elf32_Sym *, size_t);
+void print_symbols64(Elf64_Sym *, size_t);
 
 /* endian */
 uint16_t swap_16(uint16_t);

@@ -56,10 +56,6 @@ int validate_header(void);
 void init(int, char **);
 int main(int, char **);
 
-/* findsym */
-Elf32_Shdr *elf32_getshtable(void);
-Elf64_Shdr *elf64_getshtable(void);
-
 /* symbolinit */
 void elf32_symbolinit(void);
 void elf64_symbolinit(void);

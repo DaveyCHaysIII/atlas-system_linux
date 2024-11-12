@@ -31,7 +31,6 @@ void elf32_symbolinit(void)
 			lseek(FD, swap_32(shdrs[i].sh_offset), SEEK_SET);
 			read(FD, symtab, swap_32(shdrs[i].sh_size));
 			symtab_numsymbols = (swap_32(shdrs[i].sh_size) / sizeof(Elf32_Sym));
-			printf("num symbols: %lu\n", symtab_numsymbols);
 		}
 		else if (strcmp(sh_name, ".strtab") == 0)
 		{
@@ -115,23 +114,18 @@ void print_symbols32(Elf32_Sym *symbols, size_t numsymbols)
 		char *symbol_name = STRTAB + swap_32(sym->st_name);
 		if (symbol_name == NULL || *symbol_name == '\0')
 			continue;
-		unsigned char type = sym->st_info & 0x0f;
+		unsigned char type = ELF32_ST_TYPE(sym->st_info);
+		unsigned char bind = ELF32_ST_BIND(sym->st_info);
+		uint16_t shndx = swap_16(sym->st_shndx);
 		char typechar = '?';
 
-		switch (type)
-		{
-			case 0x01: typechar = 'T'; break;
-			case 0x02: typechar = 'T'; break;
-			case 0x03: typechar = 'B'; break;
-			case 0x0e: typechar = 'U'; break;
-			case 0x0f: typechar = 'L'; break;
-			case 0x10: typechar = 'C'; break;
-			default: typechar = '?'; break;
-		}
+		if (shndx == SHN_UNDEF)
+			typechar = 'U';
 		if (sym->st_value == 0)
-			printf("         U %s\n", symbol_name);
+			continue;
+	/*		printf("         U %s\n", symbol_name); */
 		else
-			printf("%08" PRIx32 " %c %s %d\n", sym->st_value, typechar, symbol_name, type);
+			printf("%08" PRIx32 " %c %s %d, %d, %hu\n", sym->st_value, typechar, symbol_name, type, bind, shndx);
 	}
 }
 
@@ -165,7 +159,8 @@ void print_symbols64(Elf64_Sym *symbols, size_t numsymbols)
 			default: typechar = '?'; break;
 		}
 		if (sym->st_value == 0)
-			printf("                 U %s\n", symbol_name);
+			continue;
+		/*	printf("                 U %s\n", symbol_name); */
 		else
 			printf("%016" PRIx64 " %c %s %d\n", sym->st_value, typechar, symbol_name, type);
 	}

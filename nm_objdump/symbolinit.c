@@ -41,7 +41,7 @@ void elf32_symbolinit(void)
 	}
 	if (symtab != NULL)
 	{
-		print_symbols32(symtab, symtab_numsymbols);
+		print_symbols32(symtab, symtab_numsymbols, shdrs);
 		free(symtab);
 	}
 	free(shdrs);
@@ -89,7 +89,7 @@ void elf64_symbolinit(void)
 	}
 	if (symtab != NULL)
 	{
-		print_symbols64(symtab, symtab_numsymbols);
+		print_symbols64(symtab, symtab_numsymbols, shdrs);
 		free(symtab);
 	}
 	free(shdrs);
@@ -105,7 +105,7 @@ void elf64_symbolinit(void)
  *
  * Return: no return
  */
-void print_symbols32(Elf32_Sym *symbols, size_t numsymbols)
+void print_symbols32(Elf32_Sym *symbols, size_t numsymbols, Elf32_Shdr *shdrs)
 {
 	for (size_t i = 0; i < numsymbols; i++)
 	{
@@ -117,15 +117,79 @@ void print_symbols32(Elf32_Sym *symbols, size_t numsymbols)
 		unsigned char type = ELF32_ST_TYPE(sym->st_info);
 		unsigned char bind = ELF32_ST_BIND(sym->st_info);
 		uint16_t shndx = swap_16(sym->st_shndx);
-		char typechar = '?';
 
-		if (shndx == SHN_UNDEF)
-			typechar = 'U';
-		if (sym->st_value == 0)
+		if (shndx < SHNUM && shndx != SHN_ABS && shndx != SHN_COMMON)
+		{
+			swap_32(shdrs[shndx].sh_type);
+			swap_32(shdrs[shndx].sh_flags);
+		}
+
+		char typechar = '?';
+		if (type == STT_FILE)
 			continue;
-	/*		printf("         U %s\n", symbol_name); */
+
+		if (bind == STB_GNU_UNIQUE)
+		{
+			typechar = 'u';
+		}
+		else if (bind == STB_WEAK && type == STT_OBJECT)
+		{
+			if (shndx == SHN_UNDEF)
+			{
+				typechar = 'v';
+			}
+			else
+			{
+				typechar = 'V';
+			}
+		}
+		else if (bind == STB_WEAK)
+		{
+			if (shndx == SHN_UNDEF)
+			{
+				typechar = 'w';
+			}
+			typechar = 'W';
+		}
+		else if (shndx == SHN_UNDEF)
+		{
+			typechar = 'U';
+		}
+		else if (shndx == SHN_ABS)
+		{
+			typechar = 'A';
+		}
+		else if (shndx == SHN_COMMON)
+		{
+			typechar = 'C';
+		}
+		else if (shdrs[shndx].sh_type == SHT_NOBITS &&
+			shdrs[shndx].sh_flags == (SHF_ALLOC | SHF_WRITE))
+			typechar = 'B';
+		else if (shdrs[shndx].sh_type == SHT_PROGBITS &&
+			shdrs[shndx].sh_flags == SHF_ALLOC)
+			typechar = 'R';
+		else if (shdrs[shndx].sh_type == SHT_PROGBITS &&
+			shdrs[shndx].sh_flags == (SHF_ALLOC | SHF_WRITE))
+			typechar = 'D';
+		else if (shdrs[shndx].sh_type == SHT_PROGBITS &&
+			shdrs[shndx].sh_flags == (SHF_ALLOC | SHF_EXECINSTR))
+			typechar = 'T';
+		else if (shdrs[shndx].sh_type == SHT_DYNAMIC)
+			typechar = 'D';
 		else
-			printf("%08" PRIx32 " %c %s %d, %d, %hu\n", sym->st_value, typechar, symbol_name, type, bind, shndx);
+			typechar = 'T';
+
+		if (bind == STB_LOCAL && typechar != '?')
+			typechar += 32;
+
+		if (typechar == 'U')
+		{
+			printf("         U %s\n", symbol_name);
+			continue;
+		}
+
+		printf("%08" PRIx32 " %c %s\n", sym->st_value, typechar, symbol_name);
 	}
 }
 
@@ -136,7 +200,7 @@ void print_symbols32(Elf32_Sym *symbols, size_t numsymbols)
  *
  * Return: no return
  */
-void print_symbols64(Elf64_Sym *symbols, size_t numsymbols)
+void print_symbols64(Elf64_Sym *symbols, size_t numsymbols, Elf64_Shdr *shdrs)
 {
 	for (size_t i = 0; i < numsymbols; i++)
 	{
@@ -145,24 +209,82 @@ void print_symbols64(Elf64_Sym *symbols, size_t numsymbols)
 		char *symbol_name = STRTAB + swap_32(sym->st_name);
 		if (symbol_name == NULL || *symbol_name == '\0')
 			continue;
-		unsigned char type = sym->st_info & 0x0f;
-		char typechar = '?';
+		unsigned char type = ELF64_ST_TYPE(sym->st_info);
+		unsigned char bind = ELF64_ST_BIND(sym->st_info);
+		uint16_t shndx = swap_16(sym->st_shndx);
 
-		switch (type)
+		if (shndx < SHNUM && shndx != SHN_ABS && shndx != SHN_COMMON)
 		{
-			case 0x01: typechar = 'T'; break;
-			case 0x02: typechar = 'T'; break;
-			case 0x03: typechar = 'B'; break;
-			case 0x0e: typechar = 'U'; break;
-			case 0x0f: typechar = 'L'; break;
-			case 0x10: typechar = 'C'; break;
-			default: typechar = '?'; break;
+			swap_32(shdrs[shndx].sh_type);
+			swap_64(shdrs[shndx].sh_flags);
 		}
-		if (sym->st_value == 0)
+
+		char typechar = '?';
+		if (type == STT_FILE)
 			continue;
-		/*	printf("                 U %s\n", symbol_name); */
+
+		if (bind == STB_GNU_UNIQUE)
+		{
+			typechar = 'u';
+		}
+		else if (bind == STB_WEAK && type == STT_OBJECT)
+		{
+			if (shndx == SHN_UNDEF)
+			{
+				typechar = 'v';
+			}
+			else
+			{
+				typechar = 'V';
+			}
+		}
+		else if (bind == STB_WEAK)
+		{
+			if (shndx == SHN_UNDEF)
+			{
+				typechar = 'w';
+			}
+			typechar = 'W';
+		}
+		else if (shndx == SHN_UNDEF)
+		{
+			typechar = 'U';
+		}
+		else if (shndx == SHN_ABS)
+		{
+			typechar = 'A';
+		}
+		else if (shndx == SHN_COMMON)
+		{
+			typechar = 'C';
+		}
+		else if (shdrs[shndx].sh_type == SHT_NOBITS &&
+			shdrs[shndx].sh_flags == (SHF_ALLOC | SHF_WRITE))
+			typechar = 'B';
+		else if (shdrs[shndx].sh_type == SHT_PROGBITS &&
+			shdrs[shndx].sh_flags == SHF_ALLOC)
+			typechar = 'R';
+		else if (shdrs[shndx].sh_type == SHT_PROGBITS &&
+			shdrs[shndx].sh_flags == (SHF_ALLOC | SHF_WRITE))
+			typechar = 'D';
+		else if (shdrs[shndx].sh_type == SHT_PROGBITS &&
+			shdrs[shndx].sh_flags == (SHF_ALLOC | SHF_EXECINSTR))
+			typechar = 'T';
+		else if (shdrs[shndx].sh_type == SHT_DYNAMIC)
+			typechar = 'D';
 		else
-			printf("%016" PRIx64 " %c %s %d\n", sym->st_value, typechar, symbol_name, type);
+			typechar = 'T';
+
+		if (bind == STB_LOCAL && typechar != '?')
+			typechar += 32;
+
+		if (typechar == 'U')
+		{
+			printf("                 U %s\n", symbol_name);
+			continue;
+		}
+
+		printf("%016" PRIx64 " %c %s\n", sym->st_value, typechar, symbol_name);
 	}
 }
 

@@ -59,8 +59,8 @@ int main(int, char **);
 /* symbolinit */
 void elf32_symbolinit(void);
 void elf64_symbolinit(void);
-void print_symbols32(Elf32_Sym *, size_t);
-void print_symbols64(Elf64_Sym *, size_t);
+void print_symbols32(Elf32_Sym *, size_t, Elf32_Shdr *);
+void print_symbols64(Elf64_Sym *, size_t, Elf64_Shdr *);
 
 /* endian */
 uint16_t swap_16(uint16_t);

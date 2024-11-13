@@ -39,7 +39,11 @@ void elf32_symbolinit(void)
 			read(FD, filestate.strtable, swap_32(shdrs[i].sh_size));
 		}
 	}
-	if (symtab != NULL)
+	if (symtab == NULL)
+	{
+		printf("nm: %s: no symbols\n", filestate.exec_name);
+	}
+	else
 	{
 		print_symbols32(symtab, symtab_numsymbols, shdrs);
 		free(symtab);
@@ -87,7 +91,11 @@ void elf64_symbolinit(void)
 			read(FD, filestate.strtable, swap_64(shdrs[i].sh_size));
 		}
 	}
-	if (symtab != NULL)
+	if (symtab == NULL)
+	{
+		printf("nm: %s: no symbols\n", filestate.exec_name);
+	}
+	else
 	{
 		print_symbols64(symtab, symtab_numsymbols, shdrs);
 		free(symtab);
@@ -149,7 +157,8 @@ void print_symbols32(Elf32_Sym *symbols, size_t numsymbols, Elf32_Shdr *shdrs)
 			{
 				typechar = 'w';
 			}
-			typechar = 'W';
+			else
+				typechar = 'W';
 		}
 		else if (shndx == SHN_UNDEF)
 		{
@@ -244,7 +253,8 @@ void print_symbols64(Elf64_Sym *symbols, size_t numsymbols, Elf64_Shdr *shdrs)
 			{
 				typechar = 'w';
 			}
-			typechar = 'W';
+			else
+				typechar = 'W';
 		}
 		else if (shndx == SHN_UNDEF)
 		{
@@ -276,8 +286,9 @@ void print_symbols64(Elf64_Sym *symbols, size_t numsymbols, Elf64_Shdr *shdrs)
 			typechar = 'T';
 
 		if (bind == STB_LOCAL && typechar != '?')
+		{
 			typechar += 32;
-
+		}
 		if (typechar == 'U')
 		{
 			printf("                 U %s\n", symbol_name);

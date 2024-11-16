@@ -87,7 +87,7 @@ void print_python_bytes(PyObject *p)
 			"  size: %ld\n"
 			"  trying string: %s\n"
 			"  first %ld bytes:",
-			size, PyBytes_AsString(p),  size_print);
+			size, each_byte->ob_sval,  size_print);
 
 	for (i = 0; i < size_print; i++)
 	{

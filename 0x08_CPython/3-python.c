@@ -25,7 +25,7 @@ void print_python_list(PyObject *p)
 		return;
 	}
 
-	length = PyList_Size(p);
+	length = PyObject_Length(p);
 	list = (PyListObject *)p;
 	allocated = list->allocated;
 

@@ -154,6 +154,6 @@ void print_python_string(PyObject *p)
 	printf("[.] string object info\n"
 			"  type: %s\n"
 			"  length: %ld\n"
-			"  value : %s\n",
+			"  value: %s\n",
 			type, str->length, PyUnicode_AsUTF8(p));
 }

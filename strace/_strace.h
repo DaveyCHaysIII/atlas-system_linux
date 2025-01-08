@@ -8,4 +8,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+int child_process(char *, char **);
+int parent_process(pid_t);
+
 #endif

@@ -5,7 +5,7 @@
  * @argc: number of arguments
  * @argv: the argument vector
  *
- * return: 0 or 1
+ * Return: 0 or 1
  */
 
 int main(int argc, char **argv)
@@ -17,77 +17,85 @@ int main(int argc, char **argv)
 	}
 
 	pid_t child;
-	child = fork();
 
+	child = fork();
 	if (child == 0)
 	{
-		//child
-		char *path = argv[1];
-		char **child_args = &argv[1];
-		char *env[] = {NULL};
-
-		if (ptrace(PTRACE_TRACEME, 0, NULL, NULL) == -1)
-		{
-			perror("ptrace child");
-		}
-		if (execve(path, child_args, env) == -1)
-		{
-			perror("execve");
-		}
-		return (1);
+		child_process(argv[1], &argv[1]);
 	}
 	else
 	{
-		//parent
-		int status;
+		parent_process(child);
+	}
+	return (0);
+}
 
-		while (1)
+/**
+ * child_process - handles the child process
+ * @path: the PATH
+ * @child_args: the argument vector
+ *
+ * Return: 0 or 1
+ */
+
+int child_process(char *path, char **child_args)
+{
+	char *env[] = {NULL};
+
+	if (ptrace(PTRACE_TRACEME, 0, NULL, NULL) == -1)
+	{
+		perror("ptrace child");
+	}
+	if (execve(path, child_args, env) == -1)
+	{
+		perror("execve");
+	}
+	return (1);
+}
+
+/**
+ * parent_process - handles the parent process
+ * @child: the child PID
+ *
+ * Return: 0 or 1
+ */
+
+int parent_process(pid_t child)
+{
+	int status;
+
+	while (1)
+	{
+		if (waitpid(child, &status, 0) == -1)
+			return (1);
+
+		if (WIFEXITED(status) || WIFSIGNALED(status))
+			break;
+
+		if (WIFSTOPPED(status))
 		{
-			if (waitpid(child, &status, 0) == -1)
+			struct user_regs_struct regs;
+#ifdef __x86_64__
+			if (ptrace(PTRACE_GETREGS, child, NULL, &regs) == -1)
 			{
-				perror("waitpid");
+				perror("ptrace_regs");
 				return (1);
 			}
-
-			if (WIFEXITED(status))
-			{
-                		//printf("Exit status: %d\n", WEXITSTATUS(status));
-                		break;
-            		}
-			else if (WIFSIGNALED(status))
-			{
-                		//printf("Terminated by signal: %d\n", WTERMSIG(status));
-                		break;
-            		}
-
-			if (WIFSTOPPED(status))
-			{
-				struct user_regs_struct regs;
-#ifdef __x86_64__
-				if (ptrace(PTRACE_GETREGS, child, NULL, &regs) == -1)
-				{
-					perror("ptrace_regs");
-					return (1);
-				}
-                		printf("%llu\n", regs.orig_rax);
+			printf("%llu\n", regs.orig_rax);
 #elif __i386__
-				if (ptrace(PTRACE_GETREGS, child, NULL, &regs) == -1)
-				{
-					perror("ptrace_regs");
-					return (1);
-				}
-                		printf("%lu\n", regs.orig_eax);
+			if (ptrace(PTRACE_GETREGS, child, NULL, &regs) == -1)
+			{
+				perror("ptrace_regs");
+				return (1);
+			}
+			printf("%lu\n", regs.orig_eax);
 #else
 #error unsupported architecture
 #endif
-			}
-
-			if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1)
-			{
-				perror("ptrace parent");
-				return(1);
-			}
 		}
+
+		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1)
+			return (1);
 	}
 	return (0);
 }

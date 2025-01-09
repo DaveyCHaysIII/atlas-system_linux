@@ -62,7 +62,7 @@ int child_process(char *path, char **child_args)
 
 int parent_process(pid_t child)
 {
-	int status;
+	int status, entry;
 
 	while (1)
 	{
@@ -74,7 +74,6 @@ int parent_process(pid_t child)
 
 		if (WIFSTOPPED(status))
 		{
-			int entry;
 			struct user_regs_struct regs;
 			syscall_t const *callinfo;
 

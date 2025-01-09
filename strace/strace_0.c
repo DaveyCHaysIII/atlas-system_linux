@@ -62,7 +62,7 @@ int child_process(char *path, char **child_args)
 
 int parent_process(pid_t child)
 {
-	int status;
+	int status, entry;
 
 	while (1)
 	{
@@ -75,23 +75,20 @@ int parent_process(pid_t child)
 		if (WIFSTOPPED(status))
 		{
 			struct user_regs_struct regs;
-#ifdef __x86_64__
+
 			if (ptrace(PTRACE_GETREGS, child, NULL, &regs) == -1)
 			{
 				perror("ptrace_regs");
 				return (1);
 			}
-			printf("%llu\n", regs.orig_rax);
-#elif __i386__
-			if (ptrace(PTRACE_GETREGS, child, NULL, &regs) == -1)
+
+			if (entry == 0)
 			{
-				perror("ptrace_regs");
-				return (1);
+				printf("%llu\n", regs.orig_rax);
+				entry = 1;
 			}
-			printf("%lu\n", regs.orig_eax);
-#else
-#error unsupported architecture
-#endif
+			else
+				entry = 0;
 		}
 
 		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1)

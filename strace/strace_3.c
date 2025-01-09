@@ -109,26 +109,26 @@ void print_params(struct user_regs_struct *regs, syscall_t const *callinfo)
 		printf("0");
 	else
 	{
-		for (i = 1; i < callinfo->nb_params; i++)
+		for (i = 0; i < callinfo->nb_params; i++)
 		{
 			switch(i)
 			{
-				case(1):
+				case(0):
 					printf("%#llx", regs->rdi); break;
-				case(2):
+				case(1):
 					printf("%#llx", regs->rsi); break;
-				case(3):
+				case(2):
 					printf("%#llx", regs->rdx); break;
-				case(4):
+				case(3):
 					printf("%#llx", regs->r10); break;
-				case(5):
+				case(4):
 					printf("%#llx", regs->r8); break;
-				case(6):
+				case(5):
 					printf("%#llx", regs->r9); break;
 				default:
 					printf("?????");
 			}
-			if (i != 0 && i != callinfo->nb_params - 1)
+			if (i != callinfo->nb_params - 1)
 				printf(", ");
 		}
 	}

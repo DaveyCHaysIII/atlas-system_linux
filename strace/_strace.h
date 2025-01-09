@@ -11,5 +11,6 @@
 
 int child_process(char *, char **);
 int parent_process(pid_t);
+void print_params(struct user_regs_struct *, syscall_t const *);
 
 #endif

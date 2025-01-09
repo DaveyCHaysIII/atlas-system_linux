@@ -77,10 +77,7 @@ int parent_process(pid_t child)
 			struct user_regs_struct regs;
 
 			if (ptrace(PTRACE_GETREGS, child, NULL, &regs) == -1)
-			{
-				perror("ptrace_regs");
-				return (1);
-			}
+				perror("ptrace_regs"), exit(1);
 
 			if (entry == 0)
 			{

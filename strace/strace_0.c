@@ -62,7 +62,7 @@ int child_process(char *path, char **child_args)
 
 int parent_process(pid_t child)
 {
-	int status, entry;
+	int status, entry = 0;
 
 	while (1)
 	{

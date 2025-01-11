@@ -43,34 +43,30 @@ int parent_process(pid_t child)
 {
 	int status, entry = 0;
 	struct user_regs_struct regs;
+	syscall_t const *callinfo;
 
 	while (1)
 	{
 		if (waitpid(child, &status, 0) == -1)
 			return (1);
 
-		if (WIFEXITED(status) || WIFSIGNALED(status))
+		if (WIFEXITED(status))
 			break;
 
-		if (WIFSTOPPED(status))
+		if (ptrace(PTRACE_GETREGS, child, NULL, &regs) == -1)
+			perror("ptrace_regs"), exit(1);
+
+		if (entry == 0 || entry % 2 != 0)
 		{
-			syscall_t const *callinfo;
-
-			if (ptrace(PTRACE_GETREGS, child, NULL, &regs) == -1)
-				perror("ptrace_regs"), exit(1);
-
-			if (entry == 0 || entry % 2 != 0)
-			{
-				callinfo = &syscalls_64_g[regs.orig_rax];
-				printf("%s", callinfo->name);
-				if (regs.orig_rax != 1)
-					printf("\n");
-			}
-			entry++;
+			callinfo = &syscalls_64_g[regs.orig_rax];
+			printf("%s", callinfo->name);
+			if (regs.orig_rax != 1)
+				printf("\n");
 		}
 
 		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1)
 			return (1);
+		entry++;
 		fflush(NULL);
 	}
 	return (0);

@@ -58,10 +58,10 @@ int parent_process(pid_t child)
 		{
 			printf("%llu\n", regs.orig_rax);
 		}
-		entry++;
 
 		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1)
 			return (1);
+		entry++;
 		fflush(NULL);
 	}
 	return (0);

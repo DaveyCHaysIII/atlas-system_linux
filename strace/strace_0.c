@@ -46,7 +46,6 @@ int parent_process(pid_t child)
 
 	while (1)
 	{
-		perror("error check");
 		if(waitpid(child, &status, 0) == -1)
 			perror("waitPID");
 
@@ -63,6 +62,7 @@ int parent_process(pid_t child)
 
 		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1)
 			return (1);
+		fflush(NULL);
 	}
 	return (0);
 }

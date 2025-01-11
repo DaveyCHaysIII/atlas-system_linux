@@ -59,16 +59,19 @@ int parent_process(pid_t child)
 		if (entry == 0 || entry % 2 != 0)
 		{
 			callinfo = &syscalls_64_g[regs.orig_rax];
-			printf("%s", callinfo->name);
 			if (regs.orig_rax == 231)
-				printf(" = ?\n");
+				printf("%s = ?\n", callinfo->name);
+			else if (regs.orig_rax == 59)
+				printf("%s = 0\n", callinfo->name);
+			else
+			printf("%s", callinfo->name);
 		}
 		else
 			printf(" = %#llx\n", regs.rax);
-		entry++;
 
 		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1)
 			return (1);
+		entry++;
 		fflush(NULL);
 	}
 	return (0);

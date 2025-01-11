@@ -46,7 +46,7 @@ int parent_process(pid_t child)
 
 	while (1)
 	{
-
+		perror("error check");
 		if(waitpid(child, &status, 0) == -1)
 			perror("waitPID");
 

@@ -73,5 +73,6 @@ int parent_process(pid_t child)
 			return (1);
 		fflush(NULL);
 	}
+	printf("\n");
 	return (0);
 }

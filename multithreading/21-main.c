@@ -40,7 +40,7 @@ int main(int ac, char **av)
 		return (EXIT_FAILURE);
 	}
 
-	for (i = 1; i < (size_t)ac. i++)
+	for (i = 1; i < (size_t)ac; i++)
 	{
 		list_t *factors;
 

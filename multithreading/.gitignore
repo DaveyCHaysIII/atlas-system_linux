@@ -1,2 +1,8 @@
 *.swp
 0-thread-entry
+1-tprintf
+10-blur_portion
+11-blur_image
+20-tprintf
+21-prime_factors
+22-prime_factors

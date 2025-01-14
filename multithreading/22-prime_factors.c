@@ -23,6 +23,7 @@ __attribute__((destructor)) void mmutex_destroy(void)
 task_t *create_task(task_entry_t entry, void *param)
 {
 	task_t *ret = malloc(sizeof(task_t));
+
 	if (ret == NULL)
 		exit(1);
 

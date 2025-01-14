@@ -59,15 +59,15 @@ int parent_process(pid_t child)
 		if (entry == 0 || entry % 2 != 0)
 		{
 			callinfo = &syscalls_64_g[regs.orig_rax];
-			printf("%s", callinfo->name);
+			fprintf(stderr, "%s", callinfo->name);
 			print_params(&regs, callinfo);
 			if (regs.orig_rax == 59)
-				printf("= 0\n");
+				fprintf(stderr, "= 0\n");
 			else if (regs.orig_rax == 231)
-				printf("= ?\n");
-
+				fprintf(stderr, "= ?\n");
+		}
 		else
-			printf("= %#llx\n", regs.rax);
+			fprintf(stderr, "= %#llx\n", regs.rax);
 
 		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1)
 			return (1);
@@ -81,9 +81,9 @@ void print_params(struct user_regs_struct *regs, syscall_t const *callinfo)
 {
 	size_t i;
 
-	printf("(");
+	fprintf(stderr, "(");
 	if (callinfo->nb_params == 0)
-		printf("0");
+		fprintf(stderr, "0");
 	else
 	{
 		for (i = 0; i < callinfo->nb_params; i++)
@@ -91,23 +91,23 @@ void print_params(struct user_regs_struct *regs, syscall_t const *callinfo)
 			switch(i)
 			{
 				case(0):
-					printf("%#llx", regs->rdi); break;
+					fprintf(stderr, "%#llx", regs->rdi); break;
 				case(1):
-					printf("%#llx", regs->rsi); break;
+					fprintf(stderr, "%#llx", regs->rsi); break;
 				case(2):
-					printf("%#llx", regs->rdx); break;
+					fprintf(stderr, "%#llx", regs->rdx); break;
 				case(3):
-					printf("%#llx", regs->r10); break;
+					fprintf(stderr, "%#llx", regs->r10); break;
 				case(4):
-					printf("%#llx", regs->r8); break;
+					fprintf(stderr, "%#llx", regs->r8); break;
 				case(5):
-					printf("%#llx", regs->r9); break;
+					fprintf(stderr, "%#llx", regs->r9); break;
 				default:
 					printf("?????");
 			}
 			if (i != callinfo->nb_params - 1)
-				printf(", ");
+				fprintf(stderr, ", ");
 		}
 	}
-	printf(") ");
+	fprintf(stderr, ") ");
 }

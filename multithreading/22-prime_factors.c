@@ -62,5 +62,30 @@ void destroy_task(task_t *task)
 
 void *exec_tasks(list_t const *tasks)
 {
+	node_t *current = NULL;
+	task_t *task = NULL;
+	size_t id = 0;
 
+	if (!tasks)
+		return (NULL);
+	for (current = tasks->head; id < tasks->size; ++id)
+	{
+		if (current == NULL)
+			return (NULL);
+		task = current->content;
+		pthread_mutex_lock(&mmutex);
+		if (task->status == PENDING)
+		{
+			task->status = STARTED;
+			pthread_mutex_unlock(&mmutex);
+			tprintf("[%02lu] Started\n", id);
+			task->result = task->entry(task->param);
+			task->status = task->result ? SUCCESS : FAILURE;
+			tprintf("[%02lu] %s\n", id, task->result ? "Success" : "Failure");
+		}
+		else
+			pthread_mutex_unlock(&mmutex);
+		current = current->next;
+	}
+	return (NULL);
 }

@@ -65,7 +65,7 @@ int parent_process(pid_t child)
 				printf("= 0\n");
 			else if (regs.orig_rax == 231)
 				printf("= ?\n");
-		}
+
 		else
 			printf("= %#llx\n", regs.rax);
 

@@ -55,9 +55,7 @@ int parent_process(pid_t child)
 		ptrace(PTRACE_GETREGS, child, NULL, &regs);
 
 		if (entry == 0 || entry % 2 != 0)
-		{
-			printf("%llu\n", regs.orig_rax);
-		}
+			fprintf(stderr, "%llu\n", regs.orig_rax);
 
 		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1)
 			return (1);

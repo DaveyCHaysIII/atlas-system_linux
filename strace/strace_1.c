@@ -63,12 +63,11 @@ int parent_process(pid_t child)
 			if (regs.orig_rax != 1)
 				fprintf(stderr, "\n");
 		}
-		fprintf(stderr, "\n");
-
 		if (ptrace(PTRACE_SYSCALL, child, NULL, NULL) == -1)
 			return (1);
 		entry++;
 		fflush(NULL);
 	}
+	fprintf(stderr, "\n");
 	return (0);
 }

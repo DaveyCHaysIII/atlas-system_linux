@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "list.h"
+
 /**
  * struct pixel_s - RGB pixel
  *

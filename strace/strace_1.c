@@ -68,6 +68,5 @@ int parent_process(pid_t child)
 		entry++;
 		fflush(NULL);
 	}
-	fprintf(stderr, "\n");
 	return (0);
 }

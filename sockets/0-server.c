@@ -5,7 +5,7 @@
  *
  * Return: return 0
  */
-int main()
+int main(void)
 {
 	int sock_fd, bind_fd;
 	struct sockaddr_in serv_addr = {
@@ -25,7 +25,7 @@ int main()
 	}
 
 
-	bind_fd = bind(sock_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
+	bind_fd = bind(sock_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 	if (bind_fd < 0)
 	{
 		perror("bind");

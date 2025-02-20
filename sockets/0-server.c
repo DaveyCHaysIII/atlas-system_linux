@@ -8,7 +8,7 @@
 int main()
 {
 	int sock_fd, bind_fd;
-	uint_32t port;
+	uint32_t port;
 	struct sockaddr_in serv_addr;
 
 	port = 12345;

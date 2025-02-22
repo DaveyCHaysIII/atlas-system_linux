@@ -45,7 +45,7 @@ int main(void)
 	printf("Client connected: %s\n", inet_ntoa(serv_addr.sin_addr));
 	bytes_recieved = recv(s, recvbuf, sizeof(recvbuf) - 1, 0);
 	recvbuf[bytes_recieved] = '\0';
-	printf("Message recieved: \"%s\"\n", recvbuf);
+	printf("Message received: \"%s\"\n", recvbuf);
 	return (0);
 }
 

@@ -31,7 +31,7 @@ Requirements
 General
 Allowed editors: vi, vim, emacs
 All your files will be compiled on Ubuntu 20.04 LTS
-Your C programs and functions will be compiled with gcc 9.* using the flags -Wall -Werror -Wextra and -pedantic
+Your C programs and functions will be compiled with gcc 9. using the flags -Wall -Werror -Wextra and -pedantic
 All your files should end with a new line
 A README.md file, at the root of the folder of the project, is mandatory
 Your code should use the Betty style. It will be checked using betty-style.pl and betty-doc.pl
@@ -59,6 +59,7 @@ GET -> Retrieve all the todos
 /todos?id={id} (where {id} is a positive integer)
 GET -> Retrieve the todo with the corresponding id
 DELETE -> Delete the todo with the corresponding id
+
 Tasks
 0. Listen
 mandatory
@@ -76,7 +77,7 @@ In a second terminal:
 
 alex@~/sockets$ lsof -i :12345
 COMMAND    PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
-0-server 24895 vagrant    3u  IPv4 251230      0t0  TCP *:12345 (LISTEN)
+0-server 24895 vagrant    3u  IPv4 251230      0t0  TCP :12345 (LISTEN)
 alex@~/sockets$ killall 0-server
 alex@~/sockets$
 Repo:
@@ -85,8 +86,6 @@ GitHub repository: atlas-system_linux
 Directory: sockets
 File: 0-server.c
 
-5 correction requests
-7/7 pts
 1. Accept
 mandatory
 Write a program that opens an IPv4/TCP socket, and listens to traffic on port 12345 (Any address).
@@ -112,8 +111,6 @@ GitHub repository: atlas-system_linux
 Directory: sockets
 File: 1-server.c
 
-1 correction request
-6/6 pts
 2. Client
 mandatory
 Write a program that connects to a listening server
@@ -141,8 +138,6 @@ GitHub repository: atlas-system_linux
 Directory: sockets
 File: 2-client.c
 
-1 correction request
-6/6 pts
 3. Roger
 mandatory
 Write a program that opens an IPv4/TCP socket, and listens to traffic on port 12345 (Any address).
@@ -177,8 +172,6 @@ GitHub repository: atlas-system_linux
 Directory: sockets
 File: 3-server.c
 
-4 correction requests
-5/5 pts
 4. REST API - The Request
 mandatory
 Write a program that opens an IPv4/TCP socket, and listens to traffic on port 8080 (Any address).
@@ -240,7 +233,6 @@ GitHub repository: atlas-system_linux
 Directory: sockets
 File: Makefile
 
-0/6 pts
 5. REST API - Queries
 mandatory
 Write a program that opens an IPv4/TCP socket, and listens to traffic on port 8080 (Any address).
@@ -338,7 +330,6 @@ GitHub repository: atlas-system_linux
 Directory: sockets
 File: Makefile
 
-0/6 pts
 7. REST API - Body parameters
 mandatory
 Write a program that opens an IPv4/TCP socket, and listens to traffic on port 8080 (Any address).
@@ -389,7 +380,6 @@ GitHub repository: atlas-system_linux
 Directory: sockets
 File: Makefile
 
-0/6 pts
 8. REST API - Create TODO
 mandatory
 Now that you can parse an HTTP request, it’s time to implement our REST API. Start by handling the POST method for the path /todos
@@ -453,7 +443,6 @@ GitHub repository: atlas-system_linux
 Directory: sockets
 File: Makefile
 
-0/6 pts
 9. REST API - Retrieve all TODOs
 mandatory
 Handle the GET method for the path /todos

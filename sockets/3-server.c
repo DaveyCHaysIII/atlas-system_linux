@@ -1,5 +1,6 @@
 #include "sockets.h"
 
+#define MAX_BUFF 1024
 /**
  * main - entry point
  *
@@ -10,7 +11,7 @@ int main(void)
 	int sock_fd, bind_fd, s;
 	struct sockaddr_in serv_addr;
 	socklen_t addr_len = sizeof(serv_addr);
-	char recvbuf[50];
+	char recvbuf[MAX_BUFF];
 	ssize_t bytes_recieved;
 
 	memset(&serv_addr, 0x00, sizeof(serv_addr));
@@ -44,7 +45,7 @@ int main(void)
 	printf("Client Connected: %s\n", inet_ntoa(serv_addr.sin_addr));
 	bytes_recieved = recv(s, recvbuf, sizeof(recvbuf) - 1, 0);
 	recvbuf[bytes_recieved] = '\0';
-	printf("Message Recieved: %s\n", recvbuf);
+	printf("Message Recieved: \"%s\"\n", recvbuf);
 	return (0);
 }
 

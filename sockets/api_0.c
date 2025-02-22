@@ -18,7 +18,7 @@ int main(void)
 	char *msg = "HTTP/1.1 200 OK\r\n";
 	ssize_t bytes_recv;
 	httpreq req;
-
+	printf("I am able to print\n");
 	sock_fd = create_ssocket(PORT, 10);
 
 	while (1)

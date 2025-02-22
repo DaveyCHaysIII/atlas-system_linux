@@ -30,6 +30,7 @@ int main(void)
 		memset(&req, 0x00, sizeof(req));
 		parse_req(recvbuf, &req);
 		print_req(&req);
+		fflush(stdout);
 		if (send(client_fd, msg, strlen(msg), 0) < 0)
 			perror("send");
 		close(client_fd);

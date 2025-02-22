@@ -11,7 +11,7 @@
 int main(void)
 {
 	int sock_fd, bind_fd, client_fd, port = 12345;
-	struct sockaddr_in serv_addr;
+	struct sockaddr_in serv_addr, client_addr;
 	socklen_t addr_len = sizeof(serv_addr);
 	char recvbuf[MAX_BUFF];
 	ssize_t bytes_recieved;
@@ -38,13 +38,13 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 	printf("Server listening on port %d\n", port);
-	client_fd = accept(sock_fd, (struct sockaddr *)&serv_addr, &addr_len);
+	client_fd = accept(sock_fd, (struct sockaddr *)&client_addr, &addr_len);
 	if (client_fd < 0)
 	{
 		perror("accept");
 		exit(EXIT_FAILURE);
 	}
-	printf("Client connected: %s\n", inet_ntoa(serv_addr.sin_addr));
+	printf("Client connected: %s\n", inet_ntoa(client_addr.sin_addr));
 	bytes_recieved = recv(client_fd, recvbuf, sizeof(recvbuf) - 1, 0);
 	recvbuf[bytes_recieved] = '\0';
 	printf("Message received: \"%s\"\n", recvbuf);

@@ -13,4 +13,7 @@
 #include <unistd.h>
 
 
+int create_ssocket(int port, int backlog);
+int create_csocket(const char *ip, int port);
+
 #endif

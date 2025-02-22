@@ -23,7 +23,6 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-
 	bind_fd = bind(sock_fd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
 	if (bind_fd < 0)
 	{

@@ -1,9 +1,14 @@
 CC := gcc
 CFLAGS := -Wall -Wextra -pedantic -std=c99
 
-UTIL := utils.c
+SOCK := socket_utils.c
+PRINT := print_utils.c
+PARSE := parse_utils.c
 
-todo_api_0: api_0.c $(UTIL)
+todo_api_0: api_0.c $(SOCK) $(PRINT) $(PARSE)
+	@$(CC) $(CFLAGS) $^ -o $@
+
+todo_api_1: api_1.c $(SOCK) $(PRINT) $(PARSE);
 	@$(CC) $(CFLAGS) $^ -o $@
 
 .PHONY: clean

@@ -129,31 +129,56 @@ int handle_accept(int sock_fd, struct sockaddr_in *addr, socklen_t *addr_len)
 
 int parse_req(const char *recvbuf, httpreq *req)
 {
-	if (sscanf(recvbuf,
-		"%s %s %s",
-		req->method,
-		req->path,
-		req->version) < 3)
+	char *line_end = strchr(recvbuf, '\r');
+	if (!line_end) return (-1);
 
+	*line_end = '\0';
+	char *line = recvbuf;
+
+	char *method = strtok(line, " ");
+	char *path = strtok(NULL, " ");
+	char *version = strtok (NULL, " ");
+
+	strcpy(req->method, method);
+	strcpy(req->version, version);
+
+	char *query = strchr(path, '?');
+	if (query)
 	{
-		perror("parse");
-		exit(EXIT_FAILURE);
+		*query = '\0';
+		strcpy(req->path, path);
+		strcpy(req->query, query + 1);
 	}
-	return (0);
+	else
+	{
+		strcpy(req->path, path)
+		req->query[0] = '\0';
+	}
+	char *header_start = line_end + 2;
+	while (*header_start != '\r')
+	{
+		char *key = strtok(header_start, ": ");
+		char *value = strtok(NULL, '\r');
+
+		if (strcasecmp(key, "Host") == 0) strcpy(req->host, value);
+		if (strcasecmp(key, "User-Agent" == 0)
+			strcpy(req->user_agent, value);
+		if (strcasecmp(key, "Accept" == 0) strcpy(req->accept, value);
+		header_start += strlen(key) + strlen(value);
+	}
 }
 
-
 /**
- * print_req - print an HTTP request
- * @req: the data structure to pull from
+ * parse_queries - parse just the queries
+ * @req - the data structure to hold the queries
  *
  * Return: no return
  */
 
-void print_req(httpreq *req)
+void parse_queries(httpreq *req)
 {
-	printf("Method: %s\nPath: %s\nVersion: %s\n",
-			req->method,
-			req->path,
-			req->version);
+	const char *query = req->query;
+
+
+
 }

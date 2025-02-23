@@ -43,6 +43,7 @@ int parse_req(char *recvbuf, httpreq *req)
 		req->query[0] = '\0';
 	}
 	parse_headers(req, orig_req);
+	parse_body(req, orig_req);
 	free(orig_req);
 	return (0);
 }
@@ -133,13 +134,14 @@ void parse_headers(httpreq *req, char *recvbuf)
 /**
  * parse_body - parses the HTTP body
  * @req: data structure to hold the http request
+ * @recvbuf: the original request
  *
  * Return: no return
  */
 
 void parse_body(httpreq *req, char *recvbuf)
 {
-	char *temp, *line, *next_line, *key, *value;
+	char *temp, *line, *value, *key;
 	int i = 0;
 
 	memset(req->bkeys, 0, sizeof(req->bkeys));
@@ -155,25 +157,20 @@ void parse_body(httpreq *req, char *recvbuf)
 		exit(EXIT_FAILURE);
 	}
 	line += 4;
-	while (line && *line && i < MAX_ENTRIES)
+	key = strtok(line, "&");
+	while (key && i < MAX_ENTRIES)
 	{
-		if (strncmp(line, "\r\n", 2) == 0)
-			break;
-		next_line = strstr(line, "\r\n");
-		if (next_line)
+		value = strchr(key, '=');
+
+		if (value)
 		{
-			*next_line = '\0';
-			next_line += 2;
-		}
-		key = strtok(line, ":");
-		value = strtok(NULL, "\r\n");
-		if (key && value)
-		{
-			strcpy(req->bkeys[i], key);
-			strcpy(req->bvals[i], value + 1);
+			*value = '\0';
+			value++;
+			strncpy(req->bkeys[i], key, MAX_KEYVAL_LEN - 1);
+			strncpy(req->bvals[i], value, MAX_KEYVAL_LEN - 1);
 			i++;
 		}
-		line = next_line;
+		key = strtok(NULL, "&");
 	}
 	free(temp);
 }

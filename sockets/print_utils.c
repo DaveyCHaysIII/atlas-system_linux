@@ -1,6 +1,6 @@
 #include "sockets.h"
 
-#define MAX_QUERIES 10
+#define MAX_ENTRIES 10
 
 
 /**
@@ -31,7 +31,7 @@ void print_queries(httpreq *req)
 	int i = 0;
 
 	printf("Path: %s\n", req->path);
-	while (i < MAX_QUERIES && req->qkeys[i][0] != '\0')
+	while (i < MAX_ENTRIES && req->qkeys[i][0] != '\0')
 	{
 		printf("Query: \"%s\" -> \"%s\"\n", req->qkeys[i], req->qvals[i]);
 		i++;
@@ -48,9 +48,14 @@ void print_queries(httpreq *req)
 
 void print_headers(httpreq *req)
 {
-	printf("Host: %s\n", req->host);
-	printf("User-Agent: %s\n", req->user_agent);
-	printf("Accept: %s\n", req->accept);
+	int i = 0;
+
+	printf("Path: %s\n", req->path);
+	while (i < MAX_ENTRIES && req->hkeys[i][0] != '\0')
+	{
+		printf("Header: \"%s\" -> \"%s\"\n", req->hkeys[i], req->hvals[i]);
+		i++;
+	}
 }
 
 

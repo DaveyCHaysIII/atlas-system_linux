@@ -2,6 +2,8 @@
 #define SERVER_H
 
 #define MAX_BUFF 1024
+#define MAX_KV 10
+#define MAX_KV_CHARS 64
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -36,12 +38,13 @@ typedef struct httpreq
 	char method[8];
 	char path[MAX_BUFF];
 	char query[MAX_BUFF];
-	char qkeys[10][16];
-	char qvals[10][16];
 	char version[16];
-	char host[MAX_BUFF];
-	char user_agent[MAX_BUFF];
-	char accept[MAX_BUFF];
+	char qkeys[MAX_KV][MAX_KV_CHARS];
+	char qvals[MAX_KV][MAX_KV_CHARS];
+	char hkeys[MAX_KV][MAX_KV_CHARS];
+	char hvals[MAX_KV][MAX_KV_CHARS];
+	char bkeys[MAX_KV][MAX_KV_CHARS];
+	char bvals[MAX_KV][MAX_KV_CHARS];
 } httpreq;
 
 /* socket_utils.c */

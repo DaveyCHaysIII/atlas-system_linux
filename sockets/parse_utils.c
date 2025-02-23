@@ -92,33 +92,40 @@ void parse_queries(httpreq *req)
 void parse_headers(httpreq *req, char *recvbuf)
 {
 	char *temp, *header_start, *key, *value;
+	int i = 0;
 
 	temp = malloc(strlen(recvbuf) + 1);
-	strcpy(temp, recvbuf);
+	if (!temp)
+		exit(EXIT_FAILURE);
 
+	strcpy(temp, recvbuf);
 	header_start = strstr(temp, "\r\n");
 	if (!header_start)
+	{
+		free(temp);
 		exit(EXIT_FAILURE);
+	}
 	header_start += 2;
 
-	while (*header_start && strncmp(header_start, "\r\n", 2) != 0)
+	while (*header_start)
 	{
+		if (strncmp(header_start, "\r\n", 2) == 0)
+			break;
+
 		key = strtok(header_start, ":");
 		value = strtok(NULL, "\r\n");
 
 		if (key && value)
 		{
-			while (*value == ' ')
-				value++;
-			if (strcmp(key, "Host") == 0)
-				strncpy(req->host, value, sizeof(req->host) - 1);
-			else if (strcmp(key, "User_Agent") == 0)
-				strncpy(req->user_agent, value, sizeof(req->user_agent) - 1);
-			else if (strcmp(key, "Accept") == 0)
-				strncpy(req->accept, value, sizeof(req->accept) - 1);
-
+			strcpy(req->hkeys[i], key);
+			strcpy(req->hvals[i], value);
+			i++;
 		}
-		header_start += strlen(key) + strlen(value) + 4;
+		header_start = strchr(header_start, '\n');
+		if (header_start)
+			header_start++;
+		else
+			break;
 	}
 
 	free(temp);

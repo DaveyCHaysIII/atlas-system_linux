@@ -26,8 +26,13 @@ void print_req(httpreq *req)
 
 void print_queries(httpreq *req)
 {
-
-
+	printf("Path: %s\n", req->path);
+	int i = 0;
+	while (req->qkeys[i])
+	{
+		printf("Query: \"%s\" -> \"%s\"\n", req->qkeys[i], req->qvals[i]);
+		i++;
+	}
 }
 
 
@@ -40,7 +45,7 @@ void print_queries(httpreq *req)
 
 void print_headers(httpreq *req)
 {
-
+	(void)req;
 }
 
 
@@ -53,5 +58,5 @@ void print_headers(httpreq *req)
 
 void print_body(httpreq *req)
 {
-
+	(void)req;
 }

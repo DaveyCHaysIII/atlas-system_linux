@@ -27,6 +27,9 @@
 typedef struct {
 	char method[8];
 	char path[MAX_BUFF];
+	char query[MAX_BUFF];
+	char qkeys[10][16];
+	char qvals[10][16];
 	char version[16];
 	char host[MAX_BUFF];
 	char user_agent[MAX_BUFF];
@@ -36,6 +39,8 @@ typedef struct {
 int create_ssocket(int port, int backlog);
 int create_csocket(const char *ip, int port);
 int handle_accept(int sock_fd, struct sockaddr_in *addr, socklen_t *addr_len);
-int parse_req(const char *recvbuf, httpreq *req);
+int parse_req(char *recvbuf, httpreq *req);
+void parse_queries(httpreq *req);
 void print_req(httpreq *req);
+void print_queries(httpreq *req);
 #endif

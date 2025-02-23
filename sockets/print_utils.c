@@ -67,5 +67,12 @@ void print_headers(httpreq *req)
 
 void print_body(httpreq *req)
 {
-	(void)req;
+
+	int i = 0;
+
+	while (i < MAX_ENTRIES && req->bkeys[i][0] != '\0')
+	{
+		printf("Body param: \"%s\" -> \"%s\"\n", req->bkeys[i], req->bvals[i]);
+		i++;
+	}
 }

@@ -48,7 +48,9 @@ void print_queries(httpreq *req)
 
 void print_headers(httpreq *req)
 {
-	(void)req;
+	printf("Host: %s\n", req->host);
+	printf("User-Agent: %s\n", req->user_agent);
+	printf("Accept: %s\n", req->accept);
 }
 
 

@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <unistd.h>
 
 /**
@@ -51,7 +52,7 @@ int handle_accept(int sock_fd, struct sockaddr_in *addr, socklen_t *addr_len);
 /* parse_utils.c */
 int parse_req(char *recvbuf, httpreq *req);
 void parse_queries(httpreq *req);
-void parse_headers(httpreq *req);
+void parse_headers(httpreq *req, char *recvbuf);
 void parse_body(httpreq *req);
 
 /* print_utils.c */

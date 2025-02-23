@@ -13,8 +13,10 @@
 
 int parse_req(char *recvbuf, httpreq *req)
 {
-	char *line_end, *line, *method, *path, *version, *query;
+	char *orig_req, *line_end, *line, *method, *path, *version, *query;
 
+	orig_req = malloc(strlen(recvbuf) + 1);
+	strcpy(orig_req, recvbuf);
 	line_end = strchr(recvbuf, '\r');
 	if (!line_end)
 		return (-1);
@@ -40,7 +42,8 @@ int parse_req(char *recvbuf, httpreq *req)
 		strcpy(req->path, path);
 		req->query[0] = '\0';
 	}
-	/*parse_headers(req);*/
+	parse_headers(req, orig_req);
+	free(orig_req);
 	return (0);
 }
 
@@ -82,14 +85,43 @@ void parse_queries(httpreq *req)
 /**
  * parse_headers - parses the HTTP headers
  * @req: data structure to hold the HTTP request
- *
+ * @recvbuf: the original request
  * Return: no return
  */
 
-void parse_headers(httpreq *req)
+void parse_headers(httpreq *req, char *recvbuf)
 {
-	(void)req;
+	char *temp, *header_start, *key, *value;
 
+	temp = malloc(strlen(recvbuf) + 1);
+	strcpy(temp, recvbuf);
+
+	header_start = strstr(temp, "\r\n");
+	if (!header_start)
+		exit(EXIT_FAILURE);
+	header_start += 2;
+
+	while (*header_start && strncmp(header_start, "\r\n", 2) != 0)
+	{
+		key = strtok(header_start, ":");
+		value = strtok(NULL, "\r\n");
+
+		if (key && value)
+		{
+			while (*value == ' ')
+				value++;
+			if (strcmp(key, "Host") == 0)
+				strncpy(req->host, value, sizeof(req->host) - 1);
+			else if (strcmp(key, "User_Agent") == 0)
+				strncpy(req->user_agent, value, sizeof(req->user_agent) - 1);
+			else if (strcmp(key, "Accept") == 0)
+				strncpy(req->accept, value, sizeof(req->accept) - 1);
+
+		}
+		header_start += strlen(key) + strlen(value) + 4;
+	}
+
+	free(temp);
 }
 
 /**

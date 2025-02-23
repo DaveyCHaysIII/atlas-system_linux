@@ -1,6 +1,6 @@
 #include "sockets.h"
 
-#define MAX_QUERIES 10
+#define MAX_ENTRIES 10
 #define MAX_KEYVAL_LEN 16
 
 /**
@@ -62,7 +62,7 @@ void parse_queries(httpreq *req)
 	memset(req->qkeys, 0, sizeof(req->qkeys));
 	memset(req->qvals, 0, sizeof(req->qvals));
 	pair = strtok(req->query, "&");
-	while (pair && MAX_QUERIES)
+	while (pair && MAX_ENTRIES)
 	{
 		key = pair;
 		value = strchr(key, '=');
@@ -91,7 +91,7 @@ void parse_queries(httpreq *req)
 
 void parse_headers(httpreq *req, char *recvbuf)
 {
-	char *temp, *header_start, *key, *value;
+	char *temp, *line, *next_line, *key, *value;
 	int i = 0;
 
 	memset(req->hkeys, 0, sizeof(req->hkeys));
@@ -99,37 +99,34 @@ void parse_headers(httpreq *req, char *recvbuf)
 	temp = malloc(strlen(recvbuf) + 1);
 	if (!temp)
 		exit(EXIT_FAILURE);
-
 	strcpy(temp, recvbuf);
-	header_start = strstr(temp, "\r\n");
-	if (!header_start)
+	line = strstr(temp, "\r\n");
+	if (!line)
 	{
 		free(temp);
 		exit(EXIT_FAILURE);
 	}
-	header_start += 2;
-
-	while (*header_start)
+	line += 2;
+	while (line && *line && i < MAX_ENTRIES)
 	{
-		if (strncmp(header_start, "\r\n", 2) == 0)
+		if (strncmp(line, "\r\n", 2) == 0)
 			break;
-
-		key = strtok(header_start, ":");
+		next_line = strstr(line, "\r\n");
+		if (next_line)
+		{
+			*next_line = '\0';
+			next_line += 2;
+		}
+		key = strtok(line, ":");
 		value = strtok(NULL, "\r\n");
-
 		if (key && value)
 		{
 			strcpy(req->hkeys[i], key);
 			strcpy(req->hvals[i], value + 1);
 			i++;
 		}
-		header_start = strchr(header_start, '\n');
-		if (header_start)
-			header_start++;
-		else
-			break;
+		line = next_line;
 	}
-
 	free(temp);
 }
 

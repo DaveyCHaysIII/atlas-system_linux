@@ -50,7 +50,6 @@ void print_headers(httpreq *req)
 {
 	int i = 0;
 
-	printf("Path: %s\n", req->path);
 	while (i < MAX_ENTRIES && req->hkeys[i][0] != '\0')
 	{
 		printf("Header: \"%s\" -> \"%s\"\n", req->hkeys[i], req->hvals[i]);

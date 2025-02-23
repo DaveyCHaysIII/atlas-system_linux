@@ -94,6 +94,8 @@ void parse_headers(httpreq *req, char *recvbuf)
 	char *temp, *header_start, *key, *value;
 	int i = 0;
 
+	memset(req->hkeys, 0, sizeof(req->hkeys));
+	memset(req->hvals, 0, sizeof(req->hvals));
 	temp = malloc(strlen(recvbuf) + 1);
 	if (!temp)
 		exit(EXIT_FAILURE);
@@ -118,7 +120,7 @@ void parse_headers(httpreq *req, char *recvbuf)
 		if (key && value)
 		{
 			strcpy(req->hkeys[i], key);
-			strcpy(req->hvals[i], value);
+			strcpy(req->hvals[i], value + 1);
 			i++;
 		}
 		header_start = strchr(header_start, '\n');

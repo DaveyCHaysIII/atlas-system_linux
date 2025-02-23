@@ -70,6 +70,7 @@ void print_body(httpreq *req)
 
 	int i = 0;
 
+	printf("Path: %s\n", req->path);
 	while (i < MAX_ENTRIES && req->bkeys[i][0] != '\0')
 	{
 		printf("Body param: \"%s\" -> \"%s\"\n", req->bkeys[i], req->bvals[i]);

@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -Wall -Wextra -pedantic -std=c99
+CFLAGS := -Wall -Wextra -pedantic -std=c99 -g3
 
 SOCK := socket_utils.c
 PRINT := print_utils.c

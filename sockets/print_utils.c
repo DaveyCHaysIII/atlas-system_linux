@@ -1,5 +1,7 @@
 #include "sockets.h"
 
+#define MAX_QUERIES 10
+
 
 /**
  * print_req - print an HTTP request
@@ -26,9 +28,10 @@ void print_req(httpreq *req)
 
 void print_queries(httpreq *req)
 {
-	printf("Path: %s\n", req->path);
 	int i = 0;
-	while (req->qkeys[i])
+
+	printf("Path: %s\n", req->path);
+	while (i < MAX_QUERIES && req->qkeys[i][0] != '\0')
 	{
 		printf("Query: \"%s\" -> \"%s\"\n", req->qkeys[i], req->qvals[i]);
 		i++;

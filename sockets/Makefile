@@ -17,4 +17,10 @@ todo_api_2: api_2.c $(SOCK) $(PRINT) $(PARSE);
 todo_api_3: api_3.c $(SOCK) $(PRINT) $(PARSE);
 	@$(CC) $(CFLAGS) $^ -o $@
 
+todo_api_4: api_4.c $(SOCK) $(PRINT) $(PARSE);
+	@$(CC) $(CFLAGS) $^ -o $@
+
+todo_api_5: api_5.c $(SOCK) $(PRINT) $(PARSE);
+	@$(CC) $(CFLAGS) $^ -o $@
+
 .PHONY: clean

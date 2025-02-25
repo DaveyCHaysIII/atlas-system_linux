@@ -75,6 +75,7 @@ typedef struct todo
 	int id;
 	char title[48];
 	char description[64];
+	char resp_string[1024];
 } todo;
 
 /* socket_utils.c */

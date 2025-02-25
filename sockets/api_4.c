@@ -19,7 +19,7 @@ int main(void)
 	httpreq req;
 
 	sock_fd = create_ssocket(PORT, 10);
-
+	memset(req->todos, 0, sizeof(req->todos));
 	while (1)
 	{
 		client_fd = handle_accept(sock_fd, &client_addr, &addr_len);
@@ -44,12 +44,14 @@ int main(void)
 
 void route_handler(httpreq *req, client_fd)
 {
-	int resp;
+	int resp, i, k;
 
 	resp = parse_resp_code(&req);
 	if (strcmp(req->method, "POST") && resp == 201)
 	{
-		//create todo
+		content_buf[1024];
+		size_t lencontent;
+
 
 	}
 	else if (resp == 200)

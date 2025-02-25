@@ -15,6 +15,11 @@ int parse_req(char *recvbuf, httpreq *req)
 {
 	char *orig_req, *line_end, *line, *method, *path, *version, *query;
 
+	memset(req->method, 0, sizeof(req->method));
+	memset(req->path, 0, sizeof(req->path));
+	memset(req->query, 0, sizeof(req->query));
+	memset(req->version, 0, sizeof(req->version));
+	memset(req->response_code, 0, sizeof(req->response_code));
 	orig_req = malloc(strlen(recvbuf) + 1);
 	strcpy(orig_req, recvbuf);
 	line_end = strchr(recvbuf, '\r');
@@ -57,12 +62,16 @@ int parse_req(char *recvbuf, httpreq *req)
 
 void parse_queries(httpreq *req)
 {
-	char *pair, *key, *value;
+	char *temp, *pair, *key, *value;
 	int i = 0;
 
+	temp = malloc(strlen(req->query) + 1);
+	if (!temp)
+		exit(EXIT_FAILURE);
+	strcpy(temp, req->query);
 	memset(req->qkeys, 0, sizeof(req->qkeys));
 	memset(req->qvals, 0, sizeof(req->qvals));
-	pair = strtok(req->query, "&");
+	pair = strtok(temp, "&");
 	while (pair && MAX_ENTRIES)
 	{
 		key = pair;
@@ -81,6 +90,7 @@ void parse_queries(httpreq *req)
 		i++;
 		pair = strtok(NULL, "&");
 	}
+	free(temp);
 }
 
 /**
@@ -142,7 +152,7 @@ void parse_headers(httpreq *req, char *recvbuf)
 void parse_body(httpreq *req, char *recvbuf)
 {
 	char *temp, *line, *value, *key;
-	int i = 0;
+	int i = 0, k;
 
 	memset(req->bkeys, 0, sizeof(req->bkeys));
 	memset(req->bvals, 0, sizeof(req->bvals));
@@ -171,6 +181,13 @@ void parse_body(httpreq *req, char *recvbuf)
 			i++;
 		}
 		key = strtok(NULL, "&");
+	}
+	for(i = 0; i < MAX_KV && req->bkey[i][0] != '\0'; i += 2)
+	{
+		req->todos[i]->in_use = 1;
+		req->todos[i]->id = i;
+		req->todos[i]->title = bvals[i];
+		req->todos[i]->description = bvals[i + 1];
 	}
 	free(temp);
 }

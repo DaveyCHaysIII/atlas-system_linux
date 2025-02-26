@@ -30,7 +30,6 @@ int main(void)
 		route_handler(&req, client_fd);
 		fflush(stdout);
 		close(client_fd);
-		req.current_id++;
 	}
 	close(sock_fd);
 }
@@ -49,17 +48,15 @@ void route_handler(httpreq *req, int client_fd)
 	size_t cont_len;
 	char resp_buf[5120];
 
-	printf("hit route handler\n");
 	resp = parse_resp_code(req);
-	printf("Resp = %d\n", resp);
 	if (resp == 201)
 	{
 		printf("Route 201\n");
 		make_todo(req);
 		cont_len = strlen(req->todos[req->current_id].resp_string);
 		sprintf(resp_buf, "HTTP/1.1 201 Created\r\nContent-Length: %zu\r\nContent-Type: application/json\r\n\r\n%s\r\n",cont_len,req->todos[req->current_id].resp_string);
-		printf("Message to send: %s\n", resp_buf);
 		send(client_fd, resp_buf, strlen(resp_buf), 0);
+		req->current_id++;
 	}
 	else
 		send(client_fd, req->response_code, strlen(req->response_code), 0);
@@ -76,11 +73,10 @@ int parse_resp_code(httpreq *req)
 {
 	int i, has_title, has_description, has_content_length;
 
-	printf("made it to parse_resp_code, method = %s\n", req->method);
 	memset(req->response_code, 0, 32);
 	if (!((strcmp(req->method, "GET") == 0 || strcmp(req->method, "POST") == 0) && strcmp(req->path, "/todos") == 0))
 	{
-		strcpy(req->response_code, "HTTP/1.1 404 Not Found");
+		strcpy(req->response_code, "HTTP/1.1 404 Not Found\r\n");
 		return (404);
 	}
 	if (strcmp(req->method, "POST") == 0)
@@ -96,7 +92,7 @@ int parse_resp_code(httpreq *req)
 		}
 		if(!has_content_length)
 		{
-			strcpy(req->response_code, "HTTP/1.1 411 Length Required");
+			strcpy(req->response_code, "HTTP/1.1 411 Length Required\r\n");
 			return (411);
 		}
 		has_title = 0;
@@ -110,13 +106,13 @@ int parse_resp_code(httpreq *req)
 		}
 		if (has_title == 0 || has_description == 0)
 		{
-			strcpy(req->response_code, "HTTP/1.1 422 Unprocessable Entity");
+			strcpy(req->response_code, "HTTP/1.1 422 Unprocessable Entity\r\n");
 			return (422);
 		}
-		strcpy(req->response_code, "HTTP/1.1 201 Created");
+		strcpy(req->response_code, "HTTP/1.1 201 Created\r\n");
 		return (201);
 	}
-	strcpy(req->response_code, "HTTP/1.1 200 OK");
+	strcpy(req->response_code, "HTTP/1.1 200 OK\r\n");
 	return (200);
 }
 
@@ -132,7 +128,6 @@ void make_todo(httpreq *req)
 	int c_id;
 	char buffer[MAX_BUFF];
 
-	printf("make_todo current id = %d\n", req->current_id);
 	c_id = req->current_id;
 	req->todos[c_id].id = c_id;
 	strcpy(req->todos[c_id].title, req->bvals[0]);

@@ -65,9 +65,8 @@ void route_handler(httpreq *req, int client_fd)
 
 		req->current_id++;
 	}
-	else if(resp == 404)
-		send(client_fd, req->response_code, strlen(msg), 0)
-	else if(resp == 422)
+	else
+		send(client_fd, req->response_code, strlen(msg), 0);
 }
 
 /**

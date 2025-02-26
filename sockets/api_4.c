@@ -130,8 +130,16 @@ void make_todo(httpreq *req)
 
 	c_id = req->current_id;
 	req->todos[c_id].id = c_id;
-	strcpy(req->todos[c_id].title, req->bvals[0]);
-	strcpy(req->todos[c_id].description, req->bvals[1]);
+	if(strcmp(req->bkeys[0], "title") == 0)
+	{
+		strcpy(req->todos[c_id].title, req->bvals[0]);
+		strcpy(req->todos[c_id].description, req->bvals[1]);
+	}
+	else
+	{
+		strcpy(req->todos[c_id].title, req->bvals[1]);
+		strcpy(req->todos[c_id].description, req->bvals[0]);
+	}
 	sprintf(buffer,
 		"{\"id\":%d,\"title\":\"%s\",\"description\":\"%s\"}",
 		req->todos[c_id].id,

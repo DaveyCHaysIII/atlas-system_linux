@@ -26,11 +26,11 @@ int main(void)
 		client_fd = handle_accept(sock_fd, &client_addr, &addr_len);
 		bytes_recv = recv(client_fd, recvbuf, sizeof(recvbuf) - 1, 0);
 		recvbuf[bytes_recv] = '\0';
-		printf("Raw request: \"%s\"\n", recvbuf);
 		memset(&req, 0x00, sizeof(req));
 		parse_req(recvbuf, &req);
 		route_handler(&req, client_fd);
 		fflush(stdout);
+		close(client_fd);
 	}
 	close(sock_fd);
 }

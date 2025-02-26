@@ -48,6 +48,7 @@ void route_handler(httpreq *req, int client_fd)
 	int resp;
 	size_t cont_len;
 	char resp_buf[5120];
+	char *msg;
 
 	printf("hit route handler\n");
 	resp = parse_resp_code(req);
@@ -64,6 +65,9 @@ void route_handler(httpreq *req, int client_fd)
 
 		req->current_id++;
 	}
+	else if(resp == 404)
+		send(client_fd, req->response_code, strlen(msg), 0)
+	else if(resp == 422)
 }
 
 /**
@@ -81,7 +85,7 @@ int parse_resp_code(httpreq *req)
 	memset(req->response_code, 0, 32);
 	if (!((strcmp(req->method, "GET") == 0 || strcmp(req->method, "POST") == 0) && strcmp(req->path, "/todos") == 0))
 	{
-		strcpy(req->response_code, "404 Not Found");
+		strcpy(req->response_code, "HTTP/1.1 404 Not Found");
 		return (404);
 	}
 	if (strcmp(req->method, "POST") == 0)
@@ -89,7 +93,7 @@ int parse_resp_code(httpreq *req)
 		has_content_length = 0;
 		for (i = 0; i < MAX_KV; i++)
 		{
-			if (strcmp(req->hkeys[i], "Content-Length") == 0)
+			if (strcmp(req->hkeys[i], "HTTP/1.1 Content-Length") == 0)
 			{
 				has_content_length = 1;
 				break;
@@ -97,7 +101,7 @@ int parse_resp_code(httpreq *req)
 		}
 		if(!has_content_length)
 		{
-			strcpy(req->response_code, "411 Length Required");
+			strcpy(req->response_code, "HTTP/1.1 411 Length Required");
 			return (411);
 		}
 		has_title = 0;
@@ -111,7 +115,7 @@ int parse_resp_code(httpreq *req)
 		}
 		if (has_title == 0 || has_description == 0)
 		{
-			strcpy(req->response_code, "422 Unprocessable Entity");
+			strcpy(req->response_code, "HTTP/1.1 422 Unprocessable Entity");
 			return (422);
 		}
 		strcpy(req->response_code, "201 Created");

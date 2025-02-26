@@ -77,7 +77,7 @@ typedef struct httpreq
 	char bkeys[MAX_KV][MAX_KV_CHARS];
 	char bvals[MAX_KV][MAX_KV_CHARS];
 	int current_id;
-	todo *todos[MAX_TODOS];
+	todo todos[MAX_TODOS];
 } httpreq;
 
 

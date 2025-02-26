@@ -49,22 +49,21 @@ void route_handler(httpreq *req, int client_fd)
 	size_t cont_len;
 	char resp_buf[5120];
 
+	printf("hit route handler\n");
 	resp = parse_resp_code(req);
+	printf("Resp = %d\n", resp);
 	if (resp == 201)
 	{
+		printf("Route 201\n");
 		make_todo(req);
-		cont_len = strlen(req->todos[req->current_id]->resp_string);
-		sscanf(resp_buf, "HTTP/1.1 201 Created\r\nContent-Length: %zu\r\nContent-Type: application/json\r\n\r\n%s\r\n",&cont_len,req->todos[req->current_id]->resp_string);
+		cont_len = strlen(req->todos[req->current_id].resp_string);
+		sprintf(resp_buf, "HTTP/1.1 201 Created\r\nContent-Length: %zu\r\nContent-Type: application/json\r\n\r\n%s\r\n",cont_len,req->todos[req->current_id].resp_string);
+		printf("Message to send: %s\n", resp_buf);
 		send(client_fd, resp_buf, strlen(resp_buf), 0);
+
 
 		req->current_id++;
 	}
-	else
-	{
-		strcpy(resp_buf, "you fucked up\r\n");
-		send(client_fd, resp_buf, strlen(resp_buf), 0);
-	}
-
 }
 
 /**
@@ -78,14 +77,14 @@ int parse_resp_code(httpreq *req)
 {
 	int i, has_title, has_description, has_content_length;
 
+	printf("made it to parse_resp_code, method = %s\n", req->method);
 	memset(req->response_code, 0, 32);
-	if (!strcmp(req->method, "GET") || !strcmp(req->method, "POST") ||
-		!strcmp(req->path, "/todos"))
+	if (!((strcmp(req->method, "GET") == 0 || strcmp(req->method, "POST") == 0) && strcmp(req->path, "/todos") == 0))
 	{
 		strcpy(req->response_code, "404 Not Found");
 		return (404);
 	}
-	if (strcmp(req->method, "POST"))
+	if (strcmp(req->method, "POST") == 0)
 	{
 		has_content_length = 0;
 		for (i = 0; i < MAX_KV; i++)
@@ -105,12 +104,12 @@ int parse_resp_code(httpreq *req)
 		has_description = 0;
 		for (i = 0; i < MAX_KV; i++)
 		{
-			if (!strcmp(req->bkeys[i], "Title"))
+			if (strcmp(req->bkeys[i], "title") == 0)
 				has_title = 1;
-			if (!strcmp(req->bkeys[i], "Description"))
+			if (strcmp(req->bkeys[i], "description") == 0)
 				has_description = 1;
 		}
-		if (!has_title || !has_description)
+		if (has_title == 0 || has_description == 0)
 		{
 			strcpy(req->response_code, "422 Unprocessable Entity");
 			return (422);
@@ -132,14 +131,18 @@ int parse_resp_code(httpreq *req)
 void make_todo(httpreq *req)
 {
 	int c_id;
+	char buffer[MAX_BUFF];
 
+	printf("make_todo current id = %d\n", req->current_id);
 	c_id = req->current_id;
-	req->todos[c_id]->id = c_id;
-	strcpy(req->todos[c_id]->title, req->bvals[0]);
-	strcpy(req->todos[c_id]->description, req->bvals[1]);
-	sscanf(req->todos[c_id]->resp_string,
+	req->todos[c_id].id = c_id;
+	strcpy(req->todos[c_id].title, req->bvals[0]);
+	strcpy(req->todos[c_id].description, req->bvals[1]);
+	sprintf(buffer,
 		"{\"id\":%d,\"title\":\"%s\",\"description\":\"%s\"}",
-		&req->todos[c_id]->id,
-		req->todos[c_id]->title,
-		req->todos[c_id]->description);
+		req->todos[c_id].id,
+		req->todos[c_id].title,
+		req->todos[c_id].description);
+	strcpy(req->todos[c_id].resp_string, buffer);
+	printf("Todo created: %s\n", req->todos[c_id].resp_string);
 }

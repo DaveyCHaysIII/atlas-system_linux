@@ -26,11 +26,11 @@ int main(void)
 		client_fd = handle_accept(sock_fd, &client_addr, &addr_len);
 		bytes_recv = recv(client_fd, recvbuf, sizeof(recvbuf) - 1, 0);
 		recvbuf[bytes_recv] = '\0';
-		memset(&req, 0x00, sizeof(req));
 		parse_req(recvbuf, &req);
 		route_handler(&req, client_fd);
 		fflush(stdout);
 		close(client_fd);
+		req.current_id++;
 	}
 	close(sock_fd);
 }
@@ -48,7 +48,6 @@ void route_handler(httpreq *req, int client_fd)
 	int resp;
 	size_t cont_len;
 	char resp_buf[5120];
-	char *msg;
 
 	printf("hit route handler\n");
 	resp = parse_resp_code(req);
@@ -61,12 +60,9 @@ void route_handler(httpreq *req, int client_fd)
 		sprintf(resp_buf, "HTTP/1.1 201 Created\r\nContent-Length: %zu\r\nContent-Type: application/json\r\n\r\n%s\r\n",cont_len,req->todos[req->current_id].resp_string);
 		printf("Message to send: %s\n", resp_buf);
 		send(client_fd, resp_buf, strlen(resp_buf), 0);
-
-
-		req->current_id++;
 	}
 	else
-		send(client_fd, req->response_code, strlen(msg), 0);
+		send(client_fd, req->response_code, strlen(req->response_code), 0);
 }
 
 /**
@@ -92,7 +88,7 @@ int parse_resp_code(httpreq *req)
 		has_content_length = 0;
 		for (i = 0; i < MAX_KV; i++)
 		{
-			if (strcmp(req->hkeys[i], "HTTP/1.1 Content-Length") == 0)
+			if (strcmp(req->hkeys[i], "Content-Length") == 0)
 			{
 				has_content_length = 1;
 				break;
@@ -117,10 +113,10 @@ int parse_resp_code(httpreq *req)
 			strcpy(req->response_code, "HTTP/1.1 422 Unprocessable Entity");
 			return (422);
 		}
-		strcpy(req->response_code, "201 Created");
+		strcpy(req->response_code, "HTTP/1.1 201 Created");
 		return (201);
 	}
-	strcpy(req->response_code, "200 OK");
+	strcpy(req->response_code, "HTTP/1.1 200 OK");
 	return (200);
 }
 

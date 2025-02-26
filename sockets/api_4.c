@@ -19,7 +19,8 @@ int main(void)
 	httpreq req;
 
 	sock_fd = create_ssocket(PORT, 10);
-	memset(req->todos, 0, sizeof(req->todos));
+	memset(req.todos, 0, sizeof(req.todos));
+	req.current_id = 0;
 	while (1)
 	{
 		client_fd = handle_accept(sock_fd, &client_addr, &addr_len);
@@ -42,28 +43,28 @@ int main(void)
  * Return: no return
  */
 
-void route_handler(httpreq *req, client_fd)
+void route_handler(httpreq *req, int client_fd)
 {
-	int resp, i, k;
+	int resp;
+	size_t cont_len;
+	char resp_buf[5120];
 
-	resp = parse_resp_code(&req);
-	if (strcmp(req->method, "POST") && resp == 201)
+	resp = parse_resp_code(req);
+	if (resp == 201)
 	{
-		content_buf[1024];
-		size_t lencontent;
+		make_todo(req);
+		cont_len = strlen(req->todos[req->current_id]->resp_string);
+		sscanf(resp_buf, "HTTP/1.1 201 Created\r\nContent-Length: %zu\r\nContent-Type: application/json\r\n\r\n%s\r\n",&cont_len,req->todos[req->current_id]->resp_string);
+		send(client_fd, resp_buf, strlen(resp_buf), 0);
 
-
-	}
-	else if (resp == 200)
-	{
-
+		req->current_id++;
 	}
 	else
 	{
-
+		strcpy(resp_buf, "you fucked up\r\n");
+		send(client_fd, resp_buf, strlen(resp_buf), 0);
 	}
 
-	print_resp(*req, client_fd);
 }
 
 /**
@@ -86,7 +87,7 @@ int parse_resp_code(httpreq *req)
 	}
 	if (strcmp(req->method, "POST"))
 	{
-		int has_content_length = 0;
+		has_content_length = 0;
 		for (i = 0; i < MAX_KV; i++)
 		{
 			if (strcmp(req->hkeys[i], "Content-Length") == 0)
@@ -119,4 +120,26 @@ int parse_resp_code(httpreq *req)
 	}
 	strcpy(req->response_code, "200 OK");
 	return (200);
+}
+
+/**
+ * make_todo - makes the todo
+ * @req: the data structure holding the request
+ *
+ * Return: no return
+ */
+
+void make_todo(httpreq *req)
+{
+	int c_id;
+
+	c_id = req->current_id;
+	req->todos[c_id]->id = c_id;
+	strcpy(req->todos[c_id]->title, req->bvals[0]);
+	strcpy(req->todos[c_id]->description, req->bvals[1]);
+	sscanf(req->todos[c_id]->resp_string,
+		"{\"id\":%d,\"title\":\"%s\",\"description\":\"%s\"}",
+		&req->todos[c_id]->id,
+		req->todos[c_id]->title,
+		req->todos[c_id]->description);
 }

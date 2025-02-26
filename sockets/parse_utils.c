@@ -152,7 +152,7 @@ void parse_headers(httpreq *req, char *recvbuf)
 void parse_body(httpreq *req, char *recvbuf)
 {
 	char *temp, *line, *value, *key;
-	int i = 0, k;
+	int i = 0;
 
 	memset(req->bkeys, 0, sizeof(req->bkeys));
 	memset(req->bvals, 0, sizeof(req->bvals));
@@ -181,13 +181,6 @@ void parse_body(httpreq *req, char *recvbuf)
 			i++;
 		}
 		key = strtok(NULL, "&");
-	}
-	for(i = 0; i < MAX_KV && req->bkey[i][0] != '\0'; i += 2)
-	{
-		req->todos[i]->in_use = 1;
-		req->todos[i]->id = i;
-		req->todos[i]->title = bvals[i];
-		req->todos[i]->description = bvals[i + 1];
 	}
 	free(temp);
 }

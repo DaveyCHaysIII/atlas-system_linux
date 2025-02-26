@@ -26,6 +26,27 @@
 #include <strings.h>
 #include <unistd.h>
 
+
+/**
+ * struct todo - the struct for making a new todo
+ * @id: the uuid of the todo
+ * @title: the title of the todo
+ * @description: the description of the todo
+ *
+ * This data structure should make handling
+ * and creating new todos much simpler
+ *
+ */
+
+typedef struct todo
+{
+	int in_use;
+	int id;
+	char title[48];
+	char description[64];
+	char resp_string[1024];
+} todo;
+
 /**
  * struct httpreq - struct to hold parsed HTTP data
  * @method: HTTP method (GET, POST, etc)
@@ -55,34 +76,18 @@ typedef struct httpreq
 	char hvals[MAX_KV][MAX_KV_CHARS];
 	char bkeys[MAX_KV][MAX_KV_CHARS];
 	char bvals[MAX_KV][MAX_KV_CHARS];
-	todo *todos[MAX_TODOS]
+	int current_id;
+	todo *todos[MAX_TODOS];
 } httpreq;
 
-/**
- * struct todo - the struct for making a new todo
- * @id: the uuid of the todo
- * @title: the title of the todo
- * @description: the description of the todo
- *
- * This data structure should make handling
- * and creating new todos much simpler
- *
- */
 
-typedef struct todo
-{
-	int in_use;
-	int id;
-	char title[48];
-	char description[64];
-	char resp_string[1024];
-} todo;
+void route_handler(httpreq *req, int client_fd);
+void make_todo(httpreq *req);
 
 /* socket_utils.c */
 int create_ssocket(int port, int backlog);
 int create_csocket(const char *ip, int port);
 int handle_accept(int sock_fd, struct sockaddr_in *addr, socklen_t *addr_len);
-int route_handler(httpreq *req, int client_fd);
 
 /* parse_utils.c */
 int parse_req(char *recvbuf, httpreq *req);

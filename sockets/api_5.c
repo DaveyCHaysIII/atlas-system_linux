@@ -26,11 +26,10 @@ int main(void)
 		client_fd = handle_accept(sock_fd, &client_addr, &addr_len);
 		bytes_recv = recv(client_fd, recvbuf, sizeof(recvbuf) - 1, 0);
 		recvbuf[bytes_recv] = '\0';
-		printf("Raw request: \"%s\"\n", recvbuf);
-		memset(&req, 0x00, sizeof(req));
 		parse_req(recvbuf, &req);
 		route_handler(&req, client_fd);
 		fflush(stdout);
+		close(client_fd);
 	}
 	close(sock_fd);
 }
@@ -45,26 +44,40 @@ int main(void)
 
 void route_handler(httpreq *req, int client_fd)
 {
-	int resp;
+	int resp, i;
 	size_t cont_len;
 	char resp_buf[5120];
+	char arr_buf[2048];
 
+	memset(arr_buf, 0, sizeof(arr_buf));
+	memset(resp_buf, 0, sizeof(resp_buf));
 	resp = parse_resp_code(req);
 	if (resp == 201)
 	{
+		printf("Route 201\n");
 		make_todo(req);
-		cont_len = strlen(req->todos[req->current_id]->resp_string);
-		sscanf(resp_buf, "HTTP/1.1 201 Created\r\nContent-Length: %zu\r\nContent-Type: application/json\r\n\r\n%s\r\n",&cont_len,req->todos[req->current_id]->resp_string);
+		cont_len = strlen(req->todos[req->current_id].resp_string);
+		sprintf(resp_buf, "HTTP/1.1 201 Created\r\nContent-Length: %zu\r\nContent-Type: application/json\r\n\r\n%s\r\n",cont_len,req->todos[req->current_id].resp_string);
 		send(client_fd, resp_buf, strlen(resp_buf), 0);
-
 		req->current_id++;
 	}
-	else
+	else if (resp == 200)
 	{
-		strcpy(resp_buf, "you fucked up\r\n");
+		printf("Route 200\n");
+		arr_buf[0] = '[';
+		for (i = 0; i < req->current_id; i++)
+		{
+			strcat(arr_buf, req->todos[i].resp_string);
+
+			if (i != req->current_id - 1)
+				strcat(arr_buf, ",");
+		}
+		strcat(arr_buf, "]");
+		sprintf(resp_buf, "HTTP/1.1 200 OK\r\nContent-Length: %zu\r\nContent-Type: application/json\r\n\r\n%s\r\n",strlen(arr_buf), arr_buf);
 		send(client_fd, resp_buf, strlen(resp_buf), 0);
 	}
-
+	else
+		send(client_fd, req->response_code, strlen(req->response_code), 0);
 }
 
 /**
@@ -79,13 +92,12 @@ int parse_resp_code(httpreq *req)
 	int i, has_title, has_description, has_content_length;
 
 	memset(req->response_code, 0, 32);
-	if (!strcmp(req->method, "GET") || !strcmp(req->method, "POST") ||
-		!strcmp(req->path, "/todos"))
+	if (!((strcmp(req->method, "GET") == 0 || strcmp(req->method, "POST") == 0) && strcmp(req->path, "/todos") == 0))
 	{
-		strcpy(req->response_code, "404 Not Found");
+		strcpy(req->response_code, "HTTP/1.1 404 Not Found\r\n");
 		return (404);
 	}
-	if (strcmp(req->method, "POST"))
+	if (strcmp(req->method, "POST") == 0)
 	{
 		has_content_length = 0;
 		for (i = 0; i < MAX_KV; i++)
@@ -98,27 +110,27 @@ int parse_resp_code(httpreq *req)
 		}
 		if(!has_content_length)
 		{
-			strcpy(req->response_code, "411 Length Required");
+			strcpy(req->response_code, "HTTP/1.1 411 Length Required\r\n");
 			return (411);
 		}
 		has_title = 0;
 		has_description = 0;
 		for (i = 0; i < MAX_KV; i++)
 		{
-			if (!strcmp(req->bkeys[i], "Title"))
+			if (strcmp(req->bkeys[i], "title") == 0)
 				has_title = 1;
-			if (!strcmp(req->bkeys[i], "Description"))
+			if (strcmp(req->bkeys[i], "description") == 0)
 				has_description = 1;
 		}
-		if (!has_title || !has_description)
+		if (has_title == 0 || has_description == 0)
 		{
-			strcpy(req->response_code, "422 Unprocessable Entity");
+			strcpy(req->response_code, "HTTP/1.1 422 Unprocessable Entity\r\n");
 			return (422);
 		}
-		strcpy(req->response_code, "201 Created");
+		strcpy(req->response_code, "HTTP/1.1 201 Created\r\n");
 		return (201);
 	}
-	strcpy(req->response_code, "200 OK");
+	strcpy(req->response_code, "HTTP/1.1 200 OK\r\n");
 	return (200);
 }
 
@@ -132,14 +144,25 @@ int parse_resp_code(httpreq *req)
 void make_todo(httpreq *req)
 {
 	int c_id;
+	char buffer[MAX_BUFF];
 
 	c_id = req->current_id;
-	req->todos[c_id]->id = c_id;
-	strcpy(req->todos[c_id]->title, req->bvals[0]);
-	strcpy(req->todos[c_id]->description, req->bvals[1]);
-	sscanf(req->todos[c_id]->resp_string,
+	req->todos[c_id].id = c_id;
+	if(strcmp(req->bkeys[0], "title") == 0)
+	{
+		strcpy(req->todos[c_id].title, req->bvals[0]);
+		strcpy(req->todos[c_id].description, req->bvals[1]);
+	}
+	else
+	{
+		strcpy(req->todos[c_id].title, req->bvals[1]);
+		strcpy(req->todos[c_id].description, req->bvals[0]);
+	}
+	sprintf(buffer,
 		"{\"id\":%d,\"title\":\"%s\",\"description\":\"%s\"}",
-		&req->todos[c_id]->id,
-		req->todos[c_id]->title,
-		req->todos[c_id]->description);
+		req->todos[c_id].id,
+		req->todos[c_id].title,
+		req->todos[c_id].description);
+	strcpy(req->todos[c_id].resp_string, buffer);
+	printf("Todo created: %s\n", req->todos[c_id].resp_string);
 }

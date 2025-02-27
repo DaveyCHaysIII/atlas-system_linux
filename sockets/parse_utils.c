@@ -176,8 +176,8 @@ void parse_body(httpreq *req, char *recvbuf)
 		{
 			*value = '\0';
 			value++;
-			strncpy(req->bkeys[i], key, MAX_KEYVAL_LEN - 1);
-			strncpy(req->bvals[i], value, MAX_KEYVAL_LEN - 1);
+			strcpy(req->bkeys[i], key);
+			strcpy(req->bvals[i], value);
 			i++;
 		}
 		key = strtok(NULL, "&");

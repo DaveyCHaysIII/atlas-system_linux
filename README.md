@@ -2,8 +2,11 @@
 
 ![sys_linux](./system_linux_banner.png)
 
-## Description
+## linkedin
 
+https://www.linkedin.com/in/daveyhaysiii/
+
+## Description
 
 This repo contains all our systems linux projects as part of ATLAS school's LAB program. Our goal was to learn how these tools work under the hood by implementing them ourselves, givng us a deeper understanding of how the linux environment works and how the operating system interacts with the kernal under the hood. Additionally we learned x86 assembly and multithreading to further enhance our undestanding of how software and hardware interact.
 
@@ -26,4 +29,6 @@ This repo contains all our systems linux projects as part of ATLAS school's LAB 
 
 Each project has its own README.md containing the project data as provided by ATLAS, including the relevant data structure definitions, how to compile, and sample files to test output against.
 
+## Todos
 
+- finish readmes for each sub project
